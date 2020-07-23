@@ -1,3 +1,5 @@
+> 정확하지 않은 정보가 있을 수 있습니다.
+
 # 객체지향
 
 1. 코드 재사용
@@ -7,6 +9,8 @@
 ## 클래스와 객체
 
 클래스란 객체를 정의해놓은 일종의 설계도다.
+![](https://images.velog.io/images/cocodori/post/1987698a-1367-4dab-9ead-16bb19248c89/2.png)
+
 
 > 도대체 클래스를 왜 만드는데?
 
@@ -132,6 +136,8 @@ public class Tv {
 
 사용자 정의 타입을 조합(또는 이용)해서 또다른 사용자정의타입 클래스를 만들어낼 수도 있다.
 
+![](https://images.velog.io/images/cocodori/post/0eb7baea-e7f7-4f84-8c6d-e260436a3848/f5bfed4fda2d59283e89031a0ae93245976164441e4f6173de5adf204d8cc208_v1.jpg)
+
 쉽게 말하자면.
 
 1. 아이언맨, 캡틴 아메리카, 블랙 펜서, 헐크, 토르 클래스를 정의한다.
@@ -225,4 +231,71 @@ iron2.tonyStark : STATIC is shared.
 
 ### Method
 
-...
+메서드란, 어떤 작업을 수행하는 여러 코드를 하나로 묶은 것이다.
+
+![](https://images.velog.io/images/cocodori/post/7372770f-1785-45ef-bac6-93411d6d36ae/1.png)
+
+이런 형태라고 볼 수 있다. Input이나 Output이 있을 수도, 없을 수도 있다.
+
+위의 그림에 빗대어 메서드를 하나 만들어본다면 이렇다.
+
+```java
+class ColorBall {
+
+    String ballColor;
+
+    /* 어떤 색의 공이든 노란색 공으로 바꾸는 메서드 */
+    String ballColorChange(String ball) { //선언부 return type - method name(parameter type)
+        ball = "YellowBall";
+        return ball;
+    }
+}
+
+public class MethodEx {
+    public static void main(String[] args) {
+
+        ColorBall ball = new ColorBall();
+
+        String ball1 = ball.ballColor = "red ball";
+        String ball2 = ball.ballColor = "blue ball";
+
+        System.out.println("----------before------------");
+        System.out.println("ball1 : " + ball1);
+        System.out.println("ball2 : " + ball2);
+
+        System.out.println("-----------after------------");
+        System.out.println("ball1 : " + ball.ballColorChange(ball1));
+        System.out.println("ball2 : " + ball.ballColorChange(ball2));
+
+    }
+}
+
+/* 결과
+----------before------------
+ball1 : red ball
+ball2 : blue ball
+-----------after------------
+ball1 : YellowBall
+ball2 : YellowBall
+*/
+```
+
+ColorBall타입의 변수를 매개변수로 받는 ballColorChange메서드다.
+
+이 메서드는 파란색 볼을 넣든, 초록색 볼을 넣든 노란색 볼로 바꾸어 출력한다.
+
+메서드를 사용하는 이유 세 가지
+
+1. 높은 재사용성
+
+    위에서 든 예시는 간단하지만, 이것이 아주 복잡한 작업이면서, 반복해야 하는 작업이라면,
+
+    그러니까 볼을 만들고 페인트로 도색하고, 말리고, 다시 다른 색으로 덮어쓰는 복잡하고 귀찮은 작업이라면, 메서드 하나만 정의해놓으면 귀찮은 일을 반복할 필요 없이 재사용할 수 있다.
+
+2. 1에서 이어지는 장점인데, 중복을 제거할 수 있다.
+3. 프로그램의 구조화
+
+    큰 규모의 프로그램을 만들 때, 작업단위로 메서드를 만든다면
+
+    전체 흐름을 쉽게 파악할 수 있도록 단순하게 구조화할 수 있다.
+  
