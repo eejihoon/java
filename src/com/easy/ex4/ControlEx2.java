@@ -12,5 +12,5 @@ public class ControlEx2 {
         for(int i=1; i<=20; i++) { //4-2
             System.out.println(i%2 == 0 || i%3==0 ? "" : i);
         }
-    } 
+    }
 }
