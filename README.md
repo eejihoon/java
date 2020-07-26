@@ -560,6 +560,345 @@ iv역시 int형 변수이므로 0으로 초기화
 6.인스턴스 초기화 블럭이 실행되면서 iv를 2로 초기화.
 7.마지막으로 생성자가 실행되면서 iv를 3으로 초기화한다.
 
+-----
+# 상속Inheritance
+
+기존의 클래스를 재사용하여 새로운 클래스를 작성하는 것이다.
+
+코드를 공통적으로 관리할 수 있기 때문에 유지보수 하기 쉽다.
+
+```java
+class Child extends Parent {
+	//...
+}
+```
+extends만으로 간단하게 상속 받을 수 있다.
+
+상속해주는 클래스Parent를 조상 클래스, 상속을 받는 클래스Child를 자손 클래스라고 한다.
+
+이 두 관계를 **상속관계**라고 부른다.
+![](https://images.velog.io/images/cocodori/post/e8b6bb23-99c7-467b-b665-29295b04fd95/typesofinheritance.jpg)
+
+
+출처 : [https://www.javatpoint.com/inheritance-in-java](https://www.javatpoint.com/inheritance-in-java)
+
+조상클래스는 자손 클래스가 변경 되어도 영향을 받지 않지만,
+
+조상클래스가 변경되면 자손 클래스는 영향을 받는다.
+
+자손 클래스는 조상 클래스의 모든 멤버를 상속 받는다. 따라서 항상 조상 클래스보다 같거나 많은 멤버를 갖는다. 상속에 상속을 거듭한다면, 멤버는 점점 확장(extends)된다. 그래서 상속을 이용한다는 것은 즉 조상 클래스를 확장extends한다는 의미이기도 하다.
+
+**자바는 단일상속만 가능하다. 두 개의 클래스를 동시에 extends할 수 없다.**
+
+**필요하다면 인터페이스나 포함관계를 이용하면 된다.**
+
+## 포함관계
+
+한 클래스의 멤버변수로 다른 클래스 타입의 참조변수를 선언하는 것을 뜻한다.
+
+```java
+class ArcReactor{
+	//...
+}
+class TonyStark{
+	ArcReactor arc = new ArcReactor();
+}
+
+class Ironman() {
+	TonyStark tony = new TonyStark();
+}
+```
+
+위와 같이 단위별로 여러 개의 클래스를 포함해서 더 큰 클래스를 만들어낼 수 있다.
+
+프로젝트 진행할 때 extends는 한 번도 사용하지 않았지만 포함관계는 수도 없이 많이 사용했다.
+
+## Object
+
+Object는 모든 클래스의 조상이다. 아무것도 상속받고 있지 않은 클래스도 결국 Object를 상속받고 있다. toString()이나 equals() 같은 메서드는 모두 Object의 메서드다.
+
+# 오버라이딩Overriding
+
+상속 받은 메서드의 내용을 변경하는 것을 **오버라이딩**이라고 한다.
+
+```java
+class CarCompo {
+	String color;
+	String gearType;
+	int door;
+
+	/*Object클래스의 toString()을 오버라이딩해서 사용*/
+	@Override
+	public String toString() {
+		return "CarCompo [color=" + color + ", gearType=" + gearType + ", door=" + door + "]";
+	}
+}
+```
+
+이클립스 기준 alt + shift + s → Override/implements Methods를 누르면 쉽게 오버라이드 할 수 있다.
+
+@Override 어노테이션은 혹여 오버라이딩을 잘못 했을 경우를 대비해 항상 붙이는 것이 좋다.
+
+오버라이딩이 잘못되었다고 바로 빨간 줄을 그어주니까.
+
+### 오버라이딩  조건
+
+- 이름이 같아야 한다
+- 매개변수가 같아야 한다
+- 반환타입이 같아야 한다
+- 접근 제어자를 좁은 범위로 변경할 수 없다.
+- 원래 메서드보다 많은 예외를 선언할 수 없다.
+
+**오버라이딩과 오버로딩은 이름만 비슷할 뿐 동료가 아니다.**
+
+> 오버로딩 : 기존에 없는 새로운 메서드를 정의하는 것(new)
+
+오버라이딩:상속 받은 메서드를 변경하는 것(modify)
+
+## super
+
+super는 일종의 this다. 상속받은 멤버와 자신의 멤버 이름이 같을 때 super를 붙여서 구분한다.
+
+코드를 보면 이해가 쉽다.
+
+```java
+public class Super {
+	public static void main(String[] args) {
+		Child child = new Child();
+		child.method();
+	}
+}
+
+class Parent {
+	int x = 10;
+}
+
+class Child extends Parent {
+	int x=20;
+	
+	void method() {
+		System.out.println("x : " + x);
+		System.out.println("this.x : " + this.x); //자신(Child)을 가리키는 this.
+		System.out.println("super.x : " + super.x);//부모(Parent)를 가리키는 super.
+	}
+
+/*
+결과 : 
+x : 20
+this.x : 20
+super.x : 10
+*/
+```
+
+super는 toString()을 오버라이딩 할 때 super.toString() + 자손 클래스의 인스턴스 변수 출력
+
+하는 식으로 써봤던 것 같다. 나중에는 lombok을 쓰니 거의 사용할 일이 없긴 했다.
+
+## super()
+
+조상 클래스의 생성자를 호출할 때 쓴다.
+
+생성자 첫 줄에서 사용해야 한다.  이유는 자손클래스의 멤버가 조상클래스 멤버를 사용할 수도 있으므로, 조상클래스의 멤버를 미리 초기화 해두어야 하기 때문이다.
+
+> Oject클래스를 제외한 모든 클래스의 생성자 첫 줄에 this() 또는 super()를 호출해야 한다. 그렇지 않으면 컴파일러가 자동으로 생성자 첫 줄에 삽입한다.
+
+인스턴스를 생성할 때는 이 두가지를 고려해야 한다.
+
+1. 어떤 클래스의 인스턴스를 생성할 것인가?
+2. 해당 클래스의 어떤 생성자를 이용해서 만들 것인가?
+
+```java
+public class Point {
+	public static void main(String[] args) {
+		Point3D p3 = new Point3D();
+		System.out.println("p3.x : " + p3.x);
+		System.out.println("p3.y : " + p3.y);
+		System.out.println("p3.z : " + p3.z);
+	}
+}
+
+class PointXY {
+	int x = 10;
+	int y = 20;
+	
+	PointXY(int x, int y) {
+		//super(); == Object()
+		this.x = x;
+		this.y = y;
+	}
+}
+
+class Point3D extends PointXY {
+	int z = 30;
+	
+	Point3D() {
+		this(100, 200, 300);	//Point3D(int x, int y, int z) 호출
+	}
+	
+	Point3D(int x, int y, int z) {
+		super(x, y); //	PointXY(int x, int y) 호출
+		this.z = z;
+	}
+	
+}
+
+/*
+결과 : 
+p3.x : 100
+p3.y : 200
+p3.z : 300
+*/
+```
+
+참고자료 : 자바의 정석
+
+----
+
+# 제어자Modifier
+## Non-Access-Modifiers
+
+접근 제어자가 아닌 제어자들로는
+static, final, abstract, synchronized......등이 있다.
+
+몇 가지만 소개한다.
+### static
+멤버변수, 메서드, 초기화 블럭 앞에 붙는다.
+static이 변수에 붙으면 모든 인스턴스에서 공통으로 사용되는 클래스 변수가 된다.
+메서드에 붙으면 인스턴스 생성없이 호출할 수 있는 static 메서드가 된다.
+
+### final
+클래스, 메서드, 멤버변수, 지역변수에 붙는다.
+final이 붙으면 수정할 수 없는 메서드, 변수, 클래스가 된다.
+즉,
+final변수는 값을 변경할 수 없는 상수.
+final method는 오버라이딩 불가.
+final class는 extends 불가.
+
+>final 변수라도
+생성자를 이용한 초기화를 통해 각 인스턴스마다 다른 값을 가지게 할 수 있다.
+
+### abstract
+클래스, 메서드 앞에 붙는다.
+클래스에 붙으면, 추상 메서드가 선언되어 있다는 것을 뜻한다.
+메서드에 붙으면 선언부만 있고 구현부가 없는 추상 메서드라는 것을 뜻한다.
+
+## 접근 제어자Access-Modifiers
+ 자바에는  public, protected, default, private 이렇게 4개의 접근 제어자가 있다.
+ ![](https://images.velog.io/images/cocodori/post/3137b374-ad31-42e7-8aa0-e4402a6b275a/Access-Modifiers.webp)
+
+이미지 출처 : https://www.softwaretestingmaterial.com/access-modifiers-in-java/
+ 
+- public - 접근 제한 없음
+- protected 같은 패키지 내, 그리고 다른 패키지의 자손(sub)클래스에서만 접근 가능
+- default 같은 패키지 내에서만 접근 가능
+- private 같은 클래스 내에서만 접근 가능
+
+![](https://images.velog.io/images/cocodori/post/6552f24a-7748-48d9-801e-ef45b75549e4/Access-Modifiers-Tabular-Column.webp)
+
+이미지 출처 : https://www.softwaretestingmaterial.com/access-modifiers-in-java/
+
+## 캡슐화
+왜 귀찮게 접근을 제어할까? 데이터를 보호하기 위해서다. 클래스 외부에서 데이터를 함부로 변경하지 못하도록 보호할 필요가 있다. 이것을 데이터 감추기Data Hiding이라고 한다. Data Hiding은 객체지향개념에서 캡슐화Encapsulation에 해당하는 내용이다.
+ 내부에서만 이용하고, 외부에는 불필요한 부분을 감추기 위해 멤버를 private으로 지정하는데, 이것 역시 캡슐화에 해당한다.
+ 만약 Time이라는 클래스를 이렇게 정의한다고 하자.
+```java
+class Time {
+	
+    int hour;
+    int minute;
+    int second;
+}
+```
+이러면 누가 언제 어디서든 값을 바꿀 수 있기 때문에 위험하고, 또 시간으로 들어와야 하는 값에 25이나 33 같은 유효하지 않은 값을 넣을지도 모른다. 이 문제를 해결하기 위해서 이렇게 쓴다.
+
+```java
+public class Time {
+
+    private int hour, minute, second;
+
+    Time(int hour, int minute, int second) {
+        setHour(hour);
+        setMinute(minute);
+        setSecond(second);
+    }
+
+    /* SETTER */
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    /*GETTER*/
+    public void setHour(int hour) {
+        if(hour < 0 || hour > 23) return; //유효성 검사
+        this.hour = hour;
+    }
+
+    public void setMinute(int minute) {
+        if(minute < 0 || minute > 59) return;
+        this.minute = minute;
+    }
+
+    public void setSecond(int second) {
+        if(second < 0 || second > 59) return;
+        this.second = second;
+    }
+
+    @Override
+    public String toString() {
+        return "Time{" +
+                "hour=" + hour +
+                ", minute=" + minute +
+                ", second=" + second +
+                '}';
+    }
+}
+
+public class TimeMain {
+    public static void main(String[] args) {
+        Time time = new Time(13, 47, 22);
+        //time.hour = 22; 이제 이런식으로 수정하지 않는다.
+        time.setHour(time.getHour()+1);
+        System.out.println(time);
+    }
+}
+```
+이런 식으로 하면 Time클래스의 멤버를 직접 수정할 수 없다. setter를 거쳐야 하기 때문에 유효성 검사를 통해 유효하지 않은 값은 return할 수 있다.
+
+### 생성자의 접근 제어자
+일반적으로 생성자의 접근 제어자는 클래스의 접근 제어자와 일치하지만 다르게 지정할 수 있다.
+private으로 지정하면 외부에서 생성자에 접근할 수 없다. 해당 클래스 내에 인스턴스를 return하는 static메서드를 선언해두면, private생성자여도 외부에서 인스턴스를 생성할 수 있다.
+> 주의할 점은 private 생성자를 가진 클래스는 다른 클래스의 조상이 될 수 없다. 따라서 class 앞에 fianl을 명시적으로 붙이는 것이 좋다.
+
+위에 말이 좀 어려웠는데 코드로 보면 쉽다.
+```java
+final class Singleton {
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        return new Singleton();
+    }
+}
+
+public class SingletonTest {
+    public static void main(String[] args) {
+       //Singleton singleton = new Singleton(); //ERROR
+        Singleton singleton = Singleton.getInstance();
+    }
+}
+```
+
+- 참고자료 : 자바의 정석
+
+
+-----
 
 
 
