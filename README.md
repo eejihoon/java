@@ -1224,8 +1224,149 @@ public class PolyArgumentTest {
     }
 }
 ```
+----
+![](https://images.velog.io/images/cocodori/post/4956a207-a903-4e82-b746-6f9282804109/interface%20VS%20abstract.png)
+
+이미지 출처 : https://learn-tech-tips.blogspot.com/2016/07/object-oriented-programming-abstract-class-vs-interface.html
 
 
+# 추상 클래스abstract class
+
+> 추상 클래스란?
+미완성 클래스 즉, 완성되지 않은 abstract 메서드를 포함하고 있는 클래스라는 뜻이다.
+
+## 추상 메서드abstract method
+
+메서드는 선언부와 구현부로 나눈다. 선언부만 있고 구현부는 작성하지 않은 메서드를 추상 메서드라고 부른다.
+
+추상 클래스를 상속받는 자손 클래스는 부모 클래스가 가진 모든 추상 메서드를 구현해야만 한다.
+
+추상 클래스는 해당 클래스를 상속 받을 자손들이 사용하는 공통 부분을 뽑아내서 정의한다.
+
+추상 클래스를 사용하는 이유는 해당 클래스를 상속하는 자손들에게 이 메서드들은 반드시 구현해야 한다고 강제하기 위해서다.
+
+# 인터페이스Interface
+
+인터페이스는 일종의 추상클래스지만, 추상클래스보다 추상화 정도가 높다.
+
+인터페이스에 선언 가능한 것
+
+- 추상 메서드
+- 상수
+- static 메서드
+- default 메서드
+
+위 네 개를 제외한 다른 것은 선언할 수 없다.
+
+작성 규칙
+
+1. 선언 시 class대신 interface라는 키워드를 사용한다.
+2. 멤버 변수에 public static final이 붙는다.
+3. 메서드 앞에 public abstract가 붙는다.
+4. 제어자가 항상 같기 때문에 2,3번에 붙는 제어자를 생략할 수 있다.
+
+인터페이스는 해당 인터페이스를 구현implements하는 클래스에게 어떤 식으로 메서드를 만들어야 하는지 도움을 주기 위해 작성한다.
+
+특징
+
+- 다중 상속 가능
+대신 인터페이스로부터만 상속 받을 수 있다.
+어차피 잘 안 쓴다.
+- extends 대신 implements 사용
+- 이름이 ~able로 끝나는 경우가 많음
+어떤 기능을 하는데 필요한 메서드를 제공한다는 의미를 강조하기 위해 able로 끝맺는 경우가 많다.
+
+## 인터페이스의 다형성
+
+인터페이스를 구현implements하는 것도 일종의 상속이기 때문에 extends하는 것과 마찬가지로 사용할 수 있다.
+
+- 인터페이스 타입의 참조변수로, 해당 인터페이스를 구현한 클래스의 인스턴스를 참조할 수 있다.
+
+```
+//List는 interface고 ArrayList는 이를 구현한 클래스다.
+List<String> list = new ArrayList<>();
+
+```
+
+- 매개변수의 타입으로 인터페이스를 사용할 수 있다.
+
+## 인터페이스의 장점
+
+1. 개발시간 단축
+선언부만 알면 된다.
+어떻게 구현되었는 지 알 필요 없고, 어떤 기능을 하는지 알고 있으면 된다.
+2. 표준화
+협업할 때 인터페이스를 구현함으로써, 일관되고 정형화된 프로그래밍 가능.
+3. 관계없는 클래스들을 관계 맺어줌
+같은 인터페이스를 구현함으로써 클래스들은 서로 연결된다.
+4. 독립적인 프로그래밍
+인터페이스를 이용하면 한 클래스의 변경이 직접적으로 다른 클래스에 영향을 끼치지 않는다.
+
+```
+package com.javaex.ch7;
+/*
+* 인터페이스 예제
+* 참고:W3school
+* */
+interface Aniaml {
+    void animalSound(); //public abstract생략
+    void sleep();
+}
+
+class Pig implements Aniaml {
+    @Override
+    public void animalSound() {
+        //구현
+        System.out.println("PIG SAY : GGOOL GGOOL");
+    }
+    @Override
+    public void sleep() {
+        System.out.println("Zzz");
+    }
+}
+
+class Panda implements Aniaml {
+    @Override
+    public void animalSound() {
+        System.out.println("Panda Sound : NYANG~");
+    }
+    @Override
+    public void sleep() {
+        System.out.println("CooooooCooooo.....");
+    }
+}
+
+public class MainAnimal {
+    public static void main(String[] args) {
+        Pig pig = new Pig();
+        Panda panda = new Panda();
+        pig.animalSound();
+        pig.sleep();
+        panda.animalSound();
+        panda.sleep();
+    }
+}
+
+```
+
+동물을 구현한다고 했을 때, 동물은 모두 소리를 내고 잠을 자지만, 내는 소리가 다르고, 잠을 자는 형태가 다르다. 그럴 떄, 인터페이스에 선언해놓고 각각의 동물 클래스에서 구현하게 하면, 프로그램은 정형화 되고, 유지보수하기 쉬운 형태가 된다.
+또한 Pig클래스의 animalSound()가 달라진다고해서 Panda클래스에 영향을 끼치지 않는다.
+
+# 인터페이스의 이해
+
+> 그래서 도대체 인터페이스가 뭔데?
+
+인터페이스를 사용하는 쪽(User)와 제공하는 쪽(Provider)가 있다.
+User는 Provider의 선언부만 알면 된다. 인터페이스는 구현부를 감싸고 있는 껍데기다.
+
+![](https://images.velog.io/images/cocodori/post/f450410e-90b4-4704-b993-2e97af45f70e/interfaceImages.png)
+출처:http://www.hitthebits.com/2012/11/what-are-interfaces.html
+
+이런 거다. 우리는 스위치interface 뒤에서 무슨 일이 일어나는지 알 필요가 없다.
+
+# default Method & static method
+완성된 default메서드와 static메서드를 인터페이스 내에 정의할 수 있다.
+해당 인터페이스를 구현하는 클래스는 default메서드를 오버라이딩해서 사용할 수 있다.
 
 
 
