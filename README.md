@@ -1382,7 +1382,7 @@ User는 Provider의 선언부만 알면 된다. 인터페이스는 구현부를 
 
 자바의 정석 예제에 간단히 주석을 달았습니다.
 
-```java
+```javai
 class Outer {
     class InstanceInner {
         int iv = 100;
@@ -1489,7 +1489,7 @@ public class Anonymous {
 Collection인터페이스는 컬렉션 클래스에 저장된 데이터를 읽고, 추가하고 삭제하는 기본적인 메서드를 정의하고 있다.
 
 |method|설명|
-|--|--|
+|----|----|
 |boolean add(Obejct o)<br>boolean addAll(Collection c)|지정된 객체Object 또는 Collection의 객체를 Collection에 추가한다.|
 |void clear()|Collection의 모든 객체를 삭제한다.
 |boolean contains(Object o)<br>boolean containsAll(Collection c)|지정된 Object 또는 Collection객체가 Collection에 포함되어 있는지 확인한다.|
@@ -1576,3 +1576,359 @@ Map인터페이스를 구현하는 클래스는 Map.Entry인터페이스도 함�
 
 
 > <cite>자바의 정석을 참고하여 작성한 글입니다.</cite>
+>
+----
+# Collections Framework - 2.List
+
+
+# ArrayList
+ArrayList는 컬렉션 프레임워크에서 가장 많이 사용하는 클래스다. Object를 이용해 순차적으로 데이터를 저장한다. 저장 공간이 없으면 동적으로 크기가 늘어난다. 새로운 배열을 만들어서 기존의 배열을 복사해 다시 저장한다.
+```java
+public class ArrayList extends AbstractList
+	implements List, RandomAccess, Cloneable, java.io.Serializable {
+    	...
+        transient Object[] elementData;	//Object배열
+        ...
+    }
+```
+
+ArrayList의 소스 일부다. elementData라는 이름의 Object[]를 멤버 변수로 선언해놨다. 따라서 ArrayList는 모든 타입의 객체를 담을 수 있다.
+
+ArrayList의 메서드들
+
+|method|설명|
+|----|----|
+|ArrayList()|크기가 10인 ArrayList를 생성|
+|ArrayList(Collection c)|주어진 컬렉션이 저장된 ArrayList를 생성|
+|ArrayList(int initialCapacity)|지정한 초기용량을 가지는 ArrayList 생성|
+|boolean add(Object o)|객체를 추가. 성공하면 true|
+|void add(int index, Object element)|지정한 index에 element 추가|
+|boolean addAll(Collection c)|주어진 컬렉션의 모든 객체를 저장|
+|boolean addAll(int index, Collecton c)|지정한 index부터 주어진 컬렉션의 모든 객체를 저장|
+|void clear()|ArrayList를 완전히 비운다|
+|Object clone()|ArrayList를 복제|
+|boolean contains(Object o)|지정한 객체가 ArrayList에 포함 되어 있는지 확인|
+|void ensureCapacity(int minCapacity)|ArrayList의 용량이 최소한 minCapacity가 되도록 한다.|
+|Object get(int index)|지정한 index에 저장한 객체를 반환|
+|int indexOf(Object o)|지정한 객체가 저장된 위치를 찾아 반환한다.|
+|boolean isEmpty()|ArrayList가 비어있는지 확인한다.|
+|Iterator iterator()|ArrayList의 Iterator객체를 반환|
+|int lastIndexOf(Object o)|객체가 저장된 위치를 역방향으로 검색해서 반환|
+|ListIterator listIterator()|ArrayList의 ListIterator를 반환|
+|ListIterator listIterator(int index)|지정한 위치부터 시작하는 ListIterator반환|
+|Object remove(int index)|지정한 위치에 있는 객체 제거|
+|boolean remove(Object o)|지정한 객체 제거|
+|boolean removeAll(Collectionc)|지정한 컬렉션에 저장된 것과 동일한 객체들을 ArrayList에서 제거|
+|boolean retainAll(Collection c)|ArrayList에 저장된 객체 중, 주어진 컬렉션과 공통된 것들을 남기고 삭제|
+|Ojbect set(int index, Object element)|주어진 객체를 지정한 위치에 저장|
+|int size()|저장된 객체 개수 반환|
+|void sort(Comparator c)|지정한 정렬기준으로 정렬|
+|List subList(int fromIndex, int toIndex)|from~to사이 저장된 객체 반환|
+|Object[] toArray()|ArrayList에 저장된 모든 객체를 객체 배열로 반환|
+|Object[] toArray(Object[] a)|ArrayList에 저장된 모든 객체를 객체배열에 담아 반환|
+|void trimToSize()|용량을 크기에 맞게 줄인다.(빈공간 없앤다.)|
+
+다음은 Vector의 실행과정인데 ArrayList와 크게 다르지 않다.
+
+```java
+package com.javaex.ch11;
+
+import java.util.Vector;
+
+public class VectorEx1 {
+    public static void main(String[] args) {
+        Vector vector = new Vector(5);  //Capacity가 5인 Vector객체
+        vector.add("1");
+        vector.add("2");
+        vector.add("3");
+        print(vector);
+
+        vector.trimToSize();    //빈공간 없앤다.
+        System.out.println("============================AFTER trimToSize()");
+        print(vector);
+
+        vector.ensureCapacity(6);
+        System.out.println("============================after ensureCapacity(6)");
+        print(vector);
+
+        vector.setSize(7);
+        System.out.println("================================setSize(7)");
+        print(vector);
+
+        vector.clear();
+        System.out.println("==================================clear()");
+        print(vector);
+
+    }
+
+    static void print(Vector vector) {
+        System.out.println("===============================================");
+        System.out.println(vector);
+        System.out.println("size : " + vector.size());
+        System.out.println("capacity : " + vector.capacity());
+    }
+
+}
+
+/*
+결과 :
+===============================================
+[1, 2, 3]
+size : 3
+capacity : 5
+============================AFTER trimToSize()
+===============================================
+[1, 2, 3]
+size : 3
+capacity : 3
+============================after ensureCapacity(6)
+===============================================
+[1, 2, 3]
+size : 3
+capacity : 6
+================================setSize(7)
+===============================================
+[1, 2, 3, null, null, null, null]
+size : 7
+capacity : 12
+==================================clear()
+===============================================
+[]
+size : 0
+capacity : 12
+*/
+```
+
+그림으로 진행 과정을 보면 이렇다.
+
+
+1. new Vector(5)
+문자열 1,2,3을 저장한 후 상태는 이렇다.
+![](https://images.velog.io/images/cocodori/post/28fbdf56-71cc-477b-b274-74e2bbff305d/image.png)
+
+2.vector.trimToSize()
+배열은 크기를 변경할 수 없다. 따라서 새로운 배열을 생성해 변수 vector에 할당한다.
+사용하지 않는 0x100은 가비지 컬렉터가 메모리에서 제거한다.
+![](https://images.velog.io/images/cocodori/post/1099597b-e083-43f0-ae30-f2b19145b2c5/image.png)
+
+
+3.vector.ensureCapacity(6)
+	마찬가지로 새로운 객체를 생성해서 기존 내용0x200을 복사한. 그 다음 vector에 새로운 주소를 할당한다.
+![](https://images.velog.io/images/cocodori/post/58f6db7b-4230-45b9-9134-7361bfc0fd8b/image.png)
+
+4.vector.size(7)
+capacity가 충분하지 않을 경우, 자동으로 기존의 크기보다 2배 큰 배열을 만들어서 복사한다.
+0x300과 연결이 끊기고 0x400에 연결된다.
+![](https://images.velog.io/images/cocodori/post/10eb9591-cd33-41c1-adf2-67064d0c596e/image.png)
+
+5.vector.clean()
+주소는 바뀌지 않고 모든 데이터를 지운다.
+
+![](https://images.velog.io/images/cocodori/post/29203b5d-2f35-4525-ad67-f73cf55da8eb/image.png)
+
+ArrayList나 Vector같은 배열 기반 자료구조는 데이터를 읽고 저장하는데 효율이 좋다. 그에 반해 용량을 늘려야 할 때는 새로운 배열을 생성하고, 기존의 배열을 복사하기 때문에 상당히 **효율이 떨어진다.** 애초에 데이터의 개수를 잘 고려해서 인스턴스를 생성하는 것이 좋다.
+
+# LinkedList
+배열은 가장 기본적인 형태의 자료구조다. 구조가 단순하고, 데이터를 읽어오는 시간access time이 가장 빠르다는 장점을 가지고 있다. 그러나 역시 단점도 있다.
+- 크기를 변경할 수 없다.
+위에서도 설명했다시피, 크기를 늘려야 할 때마다 새로 배열을 만들어서 기존의 데이터를 복사해야 하는 번거롭고 효율이 떨어지는 작업을 반복해야 한다.
+
+- 순차적이지 않은 데이터 추가, 삭제에 많은 시간을 소요한다.
+배열 중간에 데이터를 추가한다면, 빈자리를 만들기 위해 그 뒷자리에 오는 모든 요소를 복사해서 뒤로 한 칸씩 옮겨야 한다는 단점이 있다.
+
+이 단점을 보완하기 위해 LinkedList라는 자료구조가 등장했다.
+기존 배열은 데이터가 연속으로 존재하지만, LinkedList는 그렇지 않다. 연속적이지 않은 데이터를 연결Link하는 형태로 구성되어 있다.
+
+![](https://images.velog.io/images/cocodori/post/3b786d79-3e93-4850-951a-fea4810d1584/difference-between-arrays-and-linked-list.png)
+
+이미지 출처 : https://www.faceprep.in/data-structures/linked-list-vs-array/
+
+![](https://images.velog.io/images/cocodori/post/5e5ffdb3-a7f5-44ae-b36f-769b1452eb61/rVCdE.png)
+LinkedList에서 중간에 저장된 데이터를 삭제할 경우, 자리 이동 없이 next node에 대한 참조만 바뀐다. 따라서 배열에 비해 속도가 빠르다.
+다만, LinkedList는 단방향이기 때문에 다음 요소next node에 접근하는 것은 빠르지만, 이전 요소Prev node로 접근하는 것은 어렵다. 이 점을 보완하기 위해 이중 연결 리스트doubly linked list가 나왔다. 
+
+![](https://images.velog.io/images/cocodori/post/702f19d0-77d4-4fcb-b07d-6fd94d47e003/VJdku.gif)
+
+ 위 그림은 더블 링크드 리스트에서 접근성을 향상시킨 더블 써큘러 링크드 리스트doubly circular linked list다. 마지막 다음이 첫 번째 요소가 되고, 첫 번째 요소 이전이 마지막 요소가 되는 부분 말고는 더블 링크드 리스트와 다르지 않다. LinkedList의 낮은 접근성을 높이기 위해 이렇게 설계되었다.
+ 
+ **LinkedList의 메서드**
+
+
+|method|설명|
+|----|----|
+|LinkedList()|(생성자)|객체 생성|
+|LinkedList(Collection c)|주어진 컬렉션을 포함하는 객체 생성|
+|boolean add(Object o)|지정한 객체를 LinkedList에 추가.|
+|boolean addAll(Collection c)|주어진 컬렉션에 포함된 모든 요소를 추가|
+|boolean addAll(int index, Collection c)|지정한 index부터 주어진 컬렉션에 포함된 모든 요소 추가|
+|void clear()|모든 요소 삭제|
+|boolean contains(Object o)|지정한 객체를 포함하고 있다면 true|
+|boolean containsAll(Collecton c)|지정한 컬렉션의 모든 요소를 포함하고 있다면 true|
+|Object get(int index)|지정한 index의 객체를 반환|
+|int indexOf(Object o)|지정한 객체가 저장된 위치를 반환|
+|boolean isEmpty()|LinkedList가 비었다면 true|
+|Iterator iterator()|Iterator객체 반환|
+|int lastIndexOf(Object o)|지정한 객체의 index를 반환한다.|
+|Object remove(int index)|지정한 index의 객체를 제거|
+|boolean remove(int index)|지정한 index의 객체를 제거|
+|Object set(int index, Object element)|지정한 index의 객체를 주어진 객체elemetn로 바꾼다.|
+|int size()|객체의 개수를 반환|
+|List subList(int fromIndex, int toIndex)|from~to사이에 있는 객체를 반환|
+|Object[] toArray()|저장된 객체를 배열로 반환|
+|Object[] toArray(Object[] a)|저장된 객체를 주어진 배열a에 저장하여 반환|
+|Object element()|첫 번째 요소를 반환|
+|Object peek()|첫 번째 요소를 반환|
+|boolean offer(Object o)|지정한 객체o를 LinkedList에 추가|
+|Object poll()|첫 번째 요소를 반환. 반환한 요소는 삭제된다.|
+|Object remove()|첫 번째 요소를 삭제|
+|void addFirst(Object o)|맨 앞자리에 객체o를 추가|
+|void addLast(Object o)|맨 끝자리에 객체 추가|
+|Iterator descendingIterator()|역순으로 조회하기 위한 DesendingIterator반환|
+|Object getFirst()|첫 번째 요소를 반환|
+|Object getList()|마지막 요소를 반환|
+|boolean offerFirst(Object o)| 맨 앞자리에 객체o를 추가|
+|boolean offerLast(Object o)|맨 뒷자리에 객체o를 추가|
+|Object peekFirst()|첫 번째 요소 반환|
+|Object peekLast()|마지막 요소 반환|
+|Object pollFirst()|첫 번째 요소 반환하면서 삭제|
+|Object pollLast()|마지막 요소 반환하면서 삭제|
+|Object pop()|첫 번째 요소를 삭제(==removeFirst())|
+|void push(Object o)|맨 앞자리에 객체o를 추가(addFirst()와 동일)|
+|Object removeFirst()|첫 번째 요소 제거|
+|Object removeLast()|마지막 요소 제거|
+|boolean removeFirstOccurrence(Object o)|첫번째로 일치하는 객체 제거|
+|boolean removeLastOccurrence(Object o)|마지막으로 일치하는 객체 제거|
+
+
+ 
+## ArrayList vs LinkedList
+1. 순차적으로 추가/삭제 하는 경우 ArrayList가 빠르다.
+2. 중간 데이터를 추가/삭제하는 경우 LinkedList가 빠르다.
+
+|Collection|Access time|추가/삭제|비고|
+|----------|-----------|--------|---|
+|ArrayList|빠르다|느리다|순차적인 추가 삭제는 더 빠름<br>비효율적인 메모리 사용|
+|LinkedList|느리다|빠르다|데이터가 많을수록 접근성 떨어짐|
+
+데이터의 개수가 변하지 않는다면 ArrayList가 최상의 선택이다.
+변경이 잦다면 LinkedList를 사용하는 것이 나은 선택이 될 것이다.
+
+두 클래스를 조합해서 쓸 수도 있다.
+```java
+/*처음 순차적으로 저장할 때 ArrayList 이용*/
+ArrayList arraylist = new ArrayList(1000000);
+
+for(int i=0; i<1000000;i++){
+	arraylist.add(i+"");
+}
+
+/*중간에 데이터를 넣는 작업을 할 때는 LinkedList로 옮겨서 작업하면
+보다 높은 효율을 얻을 수 있다.*/
+LinkedList linkedList = new LinkedList(arraylist);
+
+for(int i=0; i<1000;i++) {
+	linkedList.add(500,"X");
+}
+```
+
+----
+
+![](https://images.velog.io/images/cocodori/post/bf6c949d-2a2e-4f7d-9e31-1ac6582ac82b/1_GNA2E1NFiJMc6cTHHPa6kw.png)
+<figcaption>출처 : https://gohighbrow.com/stacks-and-queues/</figcaption>
+
+스택은 마지막에 저장한 데이터를 가장 먼저 꺼내는 Last in first out(LIFO)구조.
+큐는 처음 저장한 데이터를 가장 먼저 꺼내는 First in first out(FIFO)구조다.
+참고로 Stack은 클래스, Queue는 인터페이스다.
+
+**Stack의 메서드**
+
+
+
+
+|method|설명|
+|----|---|
+|boolean empty()|Stack이 비었는지 확인|
+|Object peek()|Stack 맨 위에 저장된 객체를 반환 pop과 달리 꺼내는 것은 아님<br>비어 있다면 EmptyStackException|
+|Oject pop()|맨 위에 저장된 객체를 꺼낸다. 비었다면 역시<br>EmptyStackExcption|
+|Object push(Object item)|Stack에 객체를 저장한다|
+|int search(Object o)|주어진 객체o를 찾아서 index를 반환<br>배열과 달리 0이 아닌 1부터 시작|
+
+
+
+**Queue의 메서드**
+
+
+
+|method|설명|
+|-----|----|
+|boolean add(Object o)|지정한 객체o를 Queue에 추가.<br>저장 공간이 부족하면 IllegalStateException|
+|Ojbect remove()|객체를 꺼내 반환. 비어 있으면 NoSuchElementException|
+|Object element()|삭제 없이 요소를 읽는다. peek과 달리 비었을 때 NoSuchElementException|
+|boolean offer(Object o)|객체 저장|
+|Object poll()|객체를 꺼내 반환, 비었으면 null|
+|Object peek()|삭제 없이 요소 읽는다. 비었으면 null.|
+
+
+
+**Stack vs. Queue**
+```java
+package com.javaex.ch11;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+public class StackAndQueue {
+    public static void main(String[] args) {
+        Stack stack = new Stack();
+        Queue queue = new LinkedList(); //Queue인터페이스 구현체인 LinkedList
+
+        stack.push("0");
+        stack.push("1");
+        stack.push("2");
+
+        queue.offer("0");
+        queue.offer("1");
+        queue.offer("2");
+
+        System.out.println("=========Stack=========");
+        while (!stack.empty()) {
+            System.out.println(stack.pop());
+        }
+
+        System.out.println("=========Queue=========");
+        while (!queue.isEmpty()) {
+            System.out.println(queue.poll());
+        }
+    }
+}
+
+/*결과
+=========Stack=========
+2
+1
+0
+=========Queue=========
+0
+1
+2
+*/
+```
+
+## Queue의 변형
+
+### Dequeue
+Stack과 Queue의 결합. 양끝에서 저장offer과 삭제poll가능.
+구현 클래스:ArrayDeque, LinkedList
+
+### PriorityQueue
+우선순위 큐. 우선순위가 높은 것부터 꺼냄
+null저장 불가.
+입력 3,1,5,2,4 -> 출력 1,2,3,4,5
+
+### Blocking Queue
+비어 있을 때 꺼내기와 가득 차 있을 때 넣기를
+지정된 시간동안 지연block시킴
+
+
+
