@@ -1,4 +1,4 @@
-> 정확하지 않은 정보가 있을 수 있습니다.
+> [블로그](velog.io/@cocodori)에 올린 글을 옮겨둔 것입니다. 정확하지 않은 정보가 있을 수 있습니다.
 
 # 객체지향
 
@@ -2319,6 +2319,430 @@ result 2 : [bat, car, dZZZZ, dance, disc]
 subSet("b", "d")로 지정하면
 b~d사이의 문자로 시작하는 데이터를 출력한다.
 마지막 문자인 d는 출력하지 않는다.
+
+----
+
+# HashMap
+
+![](https://images.velog.io/images/cocodori/post/bce6ee10-50b5-469a-a889-5c7d43040256/1_bf87PsWt_buTQuzkcpsICQ.jpeg)
+
+출처 : https://medium.com/tanay-toshniwal/count-distinct-elements-in-input-sequence-using-java-hashmaps-373a58697dd2
+
+HashMap은 Hashtable의 페이스리프트 버전이다.
+
+Map을 구현한 클래스의 특징은 아래와 같다.
+- key, value를 묶어서 하나의 데이터entry로 저장한다.
+- key는 유일unique해야 한다.
+- value는 중복 가능
+- 해싱hassing을 사용하므로 많은 양의 데이터를 검색할 때 뛰어난 성능을 보인다.
+
+```java
+public class HashMap extends AbstractMap implements Map, Cloneable, Serializable {
+	transient Entry[] table;
+    ...
+    ...
+    /*HashMap의 내부클래스로 Entry가 정의 되어 있다.*/
+    static class Entry implements Map.Entry {	
+    	final Object key;
+        Object value;
+        ...
+    }
+}
+```
+HashMap의 소스 일부다. key와 value를 별개의 값이 아니라 내부클래스로 정의한 다음, 하나의 배열로 다루고 있다. 이것이 데이터의 무결성(integrity)적인 측면에서 더 좋은 방법이다.
+
+**HashMap의 메서드**
+
+
+|method|설명|
+|------|-----|
+|HashMap(int initialCapacity)|(생성자)지정한 값을 초기 용량으로 하는 객체 생성|
+|HashMap(int initialCapacity, float loadFactor)|(생성자)지정한 초기 용량과 loadFactor를 가진 객체 생성|
+|HashMap(Map m)|(생성자)지정한 Map의 모든 요소를 포함하는 객체 생성)|
+|void clear()|모든 객체 삭제|
+|Object clone()|객체를 복사해서 반환|
+|boolean containsKey(Object key)|지정한 key가 포함되어 있는지 확인|
+|boolean containsValue(Object value)|지정한 value가 포함되어 있는지 확인|
+|Set entrySet()|지정한 키와 값을 엔트리(key+value)의 형태로 Set에 저장해서 반환|
+|Object get(Object key)|지정한 key의 매핑된 value를 반환.|
+|Object getOrDefault(Object key, Object defaultValue)|지정한 key의 value를 반환. key를 못 찾으면 defaultValue로 지정한 객체를 반환|
+|boolean isEmpty()|객체가 비어있는지 확인|
+|Set keySet()|저장된 모든 key가 저장된 Set을 반환|
+|Object put(Object key, Object value)|지정한 key와 vlaue를 저장|
+|void putAll(Map m)|지정한 Map에 저장된 모든 요소를 저장|
+|Object remove(Object key)|지정한 key로 저장된 객체(key+value) 제거|
+|Object replace(Object key, Object value)|지정한 key의 값을 지정한 value로 대체|
+|boolean replace(Object key, Object oldValue, Object newValue|지정한 key와 oldValue가 모두 일치하는 경우에만 새로운 객체newValue로 대체|
+|int size()|저장된 객체의 수 반환|
+|Collection values()|저장된 모든 값을 컬렉션 형태로 변환|
+
+```java
+package com.javaex.ch11;
+
+import java.util.*;
+
+public class HashMapEx3 {
+    static HashMap phoneBook = new HashMap();
+
+    public static void main(String[] args) {
+        addPhoneNo("친구","이코코","010-0000-0001");
+        addPhoneNo("회사","박코코","010-0000-0002");
+        addPhoneNo("회사","라코코","010-0000-0003");
+        addPhoneNo("친구","파코코","010-0000-0004");
+        addPhoneNo("친구","초코코","010-0000-0005");
+        addPhoneNo("친구","동코코","010-0000-0006");
+        addPhoneNo("회사","이코코","010-0000-0007");
+        addPhoneNo("네네치킨","000-000-0000");
+        printList();
+    }
+
+
+    //그룹에 전화번호 추가
+    static void addPhoneNo(String groupName, String name, String tel) {
+        addGroup(groupName);    //새 그룹 이름 만들기
+        HashMap group = (HashMap)phoneBook.get(groupName);  //새로 만든 그룹 이름의 value를 불러오기
+        group.put(tel, name);   //중복일 수 없는 전화번호를 key로 설정
+
+    }
+
+    //그룹 추가
+    static void addGroup(String groupName) {
+        if(!phoneBook.containsKey(groupName)){  //그룹 이름 중복 체크
+            phoneBook.put(groupName, new HashMap());    //그룹 이름과 HashMap객체를 phoneBook에 추가
+        }
+    }
+
+    //미분류 그룹
+    static void addPhoneNo(String name, String tel) {
+        addPhoneNo("기타", name, tel);
+    }
+
+    //전화번호부 전체 출력
+    static void printList() {
+        Set set = phoneBook.entrySet(); //Map에 저장된 객체를 Set으로 반환하는 entrySet()
+        Iterator iterator = set.iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+
+            Set subSet = ((HashMap)entry.getValue()).entrySet();    //value값을 subSet에 저장
+            Iterator subIt = subSet.iterator();
+
+            System.out.println(" * " +entry.getKey()+"["+subSet.size()+"]");
+
+            while (subIt.hasNext()) {
+                Map.Entry sub = (Map.Entry) subIt.next();
+                String telNo = (String)sub.getKey();
+                String name = (String)sub.getValue();
+                System.out.println(name + " : " + telNo);
+            }
+            System.out.println();
+        }  //end - while
+    } //printList()
+} //end - class
+
+
+/*
+결과
+
+ * 기타[1]
+네네치킨 : 000-000-0000
+
+ * 친구[4]
+동코코 : 010-0000-0006
+초코코 : 010-0000-0005
+이코코 : 010-0000-0001
+파코코 : 010-0000-0004
+
+ * 회사[3]
+이코코 : 010-0000-0007
+박코코 : 010-0000-0002
+라코코 : 010-0000-0003
+*/
+
+```
+HashMap은 데이터를 모두 Object타입으로 저장하기 때문에 HashMap안에 HashMap을 넣을 수 있다.
+
+```java
+package com.javaex.ch11;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class HashMap4 {
+    public static void main(String[] args) {
+        String[] data = {"A","K","A","K","D","K","A","K","K","K","Z","D"};
+
+        HashMap map = new HashMap();
+
+        for(int i=0; i < data.length; i++) {
+            if(map.containsKey(data[i])) { //map에 저장된 key 중에 data[i]가 있다면,
+                Integer value = (Integer)map.get(data[i]);  //key의 value를 Integer에 저장.
+                /*
+                ???value.intValue()와 value의 결과값이 같은데 왜 intValue()를 쓸까?
+                */
+                map.put(data[i], value.intValue() + 1); //map에 data[i]와, value+1 값을 저장
+            } else {
+                map.put(data[i], 1);   //없다면 map에 data[i]의 값과, 1을 저장
+            }
+        } // end - for
+
+        Iterator iterator = map.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry =(Map.Entry) iterator.next();
+            int value = ((Integer)entry.getValue()).intValue();
+//            System.out.println("entry.getKey() : " + entry.getKey());
+//            System.out.println("entry.getValue() : " + entry.getValue());
+            System.out.println(entry.getKey() + " : " + printBar('#',value)+ " " + value);
+        }
+    } //main()
+
+    public static String printBar(char ch, int value) {
+        char[] bar = new char[value];
+
+        for (int i = 0; i < bar.length; i++) {
+            bar[i] = ch;
+        }
+            return new String(bar);
+    }
+}
+```
+
+위 코드 진행 과정
+
+1. 문자열 배열에 담긴 문자열을 하나씩 읽어서 HashMap에 key로 저장, 값으로 1을 저장한다.
+2. HashMap에 같은 문자열이 같은 문자열이 키로 저장되어있는지 containsKey()로 확인한다.
+3. 있다면 저장되어 있는 문자열의 value를 +1한다.
+4. printBar()를 이용해서 그래프로 표현한다.
+
+----
+
+- *잘못된 내용이 있을 수 있습니다.*
+# 해싱과 해시함수
+>해싱이란 해시함수를 이용해서 데이터를 헤시테이블에 저장하고 검색하는 기법이다.
+해시함수는 데이터가 저장되어 있는 곳을 알려주므로 다량의 데이터 중에서도 원하는 데이터를 빠르게 찾을 수 있다.
+
+해싱을 구현한 클래스로 HashSet, HashMap, Hashtable 등이 있다. Hashtable은 컬렉션프레임웍 도입(JDK1.8)이후 HashMap으로 대체 되었다.
+
+# 해싱의 자료 구조
+
+![](https://images.velog.io/images/cocodori/post/94aa8993-8b07-40ce-888e-183f7b6374f7/KakaoTalk_20200730_185706900.jpg)
+
+HashMap을 이용해 아주 복잡한 이름을 가진 모델명과 제조사를 묶어서 데이터를 보관해둔다고 하자. 나는 이 복잡한 이름의 모델명을 가진 제품의 제조사를 자주 구분해야 할 필요가 있다. 중복되지 않는 모델명을 key로 두고 언제든 key를 이용해 value에 접근할 수 있게 만든다면 이렇게 할 것이다.
+
+|아주 복잡한 이름의 제품 모델명|
+|----|
+|GalaxyNote10|
+|iphoneXS|
+|GalaxyS20|
+|iphone5|
+|G10|
+|GoolgePhone1|
+
+
+이 분류가 위 그림에서 Array부분에 해당한다.
+그 다음은 중복을 허용하는 value 부분에 제조사를 추가한다.
+
+
+|아주 복잡한 이름의 제품 모델명|제조사|
+|----|----|
+|GalaxyNote10|apple|
+|iphoneXS|apple|
+|GalaxyS20|Samsung|
+|iphone5|Samsung|
+|G10|LG|
+|GoolgePhone1|Google|
+
+
+
+정리하자면, 해싱에 사용되는 자료구조(Array+LinkedList)에서
+분류는 Array, 실제 데이터는 LinkedList로 저장한다.
+
+이러면 언제든지, 필요할 때마다 이 복잡한 이름의 제품을 어떤 회사가 만들었는지 쉽게 알 수 있다.
+
+아래는 원하는 요소를 찾는 과정이다.
+
+![](https://images.velog.io/images/cocodori/post/5c2c0375-7138-45dc-ac92-76f9b5c2a1ab/KakaoTalk_20200730_190558186.jpg)
+
+
+1. 검색할 key로 해시함수 호출
+2. 해시함수 결과(hash code)로 해당 값이 저장된 LinkedList를 찾는다.
+3. 최종 결과 값 반환(apple)
+
+하나의 key에 여러 LinkedList를 저장할 수 있지만 그렇게하면 성능이 떨어진다. 알다시피 LinkedList는 검색에 취약하기 때문이다. 따라서 하나의 key에 하나의 LinkedList만 저장해두는 것이 좋다.
+ - HashMap의 크기를 적절히 지정한다.
+ - 해시함수가 다른 key에 대해 중복된 해시코드를 반환을 최소화 한다.
+ 
+그래서 해싱을 구현할 때 중요한 것은 해시함수 알고리즘이다. 보통은 HashMap과 같이 해싱을 구현한 컬렉션 클래스에서는 Object클래스에 정의된 hashCode()를 해시함수로 사용한다. hashCode()는 객체의 주소를 이용하는 알고리즘으로 해시코드를 만들기 때문에 모든 객체에 대해 hashCode()를 호출한 결과가 다르다. 좋은 방법이다.
+
+String클래스의 경우, Object에서 상속받은 hashCode()를 오버라이딩해서 문자열의 내용으로 해시코드를 만든다. 따라서 다른 String인스턴스라고 해도, 문자열이 같다면 같은 해시코드를 반환한다.
+equals()로 비교환 결과가 true인 동시에 hashCode()의 반환값이 같아야 같은 객체로 인식한다. HashMap도 마찬가지며, 이미 존재하는 key값을 저장하면 기존 값을 새로운 값으로 덮어쓴다.
+
+
+참고:자바의 정석
+
+
+----
+![](https://images.velog.io/images/cocodori/post/0efdd9ff-a56a-4508-bcc3-d28a436b6f8e/1_TuJ3FO1cxXR12fNZAlWF0Q.jpeg)
+이미지 출처 : https://adrianmejia.com/data-structures-for-beginners-trees-binary-search-tree-tutorial/
+
+트리구조.
+
+# TreeMap
+
+![](https://images.velog.io/images/cocodori/post/2738e249-0fbc-4f4a-8af7-1e80da9d9412/treeMap.jpg)
+이미지 출처 : https://www.java8net.com/2020/02/treemap-in-java.html
+
+
+TreeMap은 이름에서 알다시피 이진검색트리 형태에 key와 value 쌍으로 이루어진 데이터를 저장한다.
+- 검색과 정렬에 적합한 컬렉션 클래스다.
+범위 검색은 TreeMap이 성능이 좋지만, 그게 아니라면 검색 부분에서는 HashMap 성능이 더 좋다.
+
+**TreeMap의 메서드**
+
+|method|설명|
+|------|-----|
+|TreeMap(Comparator c)|지정한 Comparator를 기준으로 정렬하는 객체 생성|
+|TreeMap(Map m)|주어진 Map에 저장된 요소를 포함하는 객체 생성|
+|TreeMap(SortedMap m)|주어진 SortedMap에 저장된 모든 요소를 포함하는 객체 생성|
+|Map.Entry ceilingEntry(Object key)|지정한 key와 일치하거나, 큰 것 중 제일 작은 Map.Entry(key-value) 반환. 없으면 null.|
+|Object ceilingKey(Object key)|지정한 key와 일치하거나 큰 것중 제일 작은 key를 반환. 없으면 null|
+|void clear()|모든 객체 삭제|
+|Object clone()|현재 객체를 복제해서 반환|
+|Comparator comparator()|TreeMap의 정렬기준이 되는 Comparator를 반환.<br>Comparator가 지정되지 않았다면 null|
+|boolean containsKey(Object key|TreeMap에 지정한 key가 포함되어 있는지 확인|
+|boolean containsValue(Object value)|지정한 value를 포함하는지 확인|
+|NavigableSet descendingKeySet()|저장된 키를 역순으로 정렬해서 NavigableSet으로 반환|
+|Set entrySEt()|엔트리(key+value)를 (Set타입)반환|
+|Map.entry firstEntry()|첫 번째(가장 작은) key-value를 반환|
+|Object firstKey()|첫 번째(가장 작은) key를 반환|
+|Map.Entry floorEntry(Object key)|지정한 key와 일치하거나 작은 것 중에 제일 큰 key의 key-value를 반환.|
+|Object floorKey(Object key)|지정한 key와 일치하거나 작은 것 중, 제일 큰 키를 반환.|
+|Object get(Object key)|지정한 key의 value를 반환|
+|SortedMap headMap(Object toKey)|TreeMap에 저장된 첫 번째 요소부터 지정한 범위에 속한 모든 요소가 담긴 SortedMap을 반환. (toKey 포함)|
+|NavigableMap headMap(Object toKey, boolean inclusive)|TreeMap에 저장된 첫 번째 요소부터 지정한 범위toKey에 속한 모든 요소가 담긴 SortedMap을 반환. inclusive가 true면 toKey도 포함|
+|Map.Entry highherEntry(Object key|지정한 key보다 큰 키 중에서, 제일 작은 key-value를 반환.|
+|Object higherKey(Object key)|지정한 key보다 큰 키 중에서 제일 작은 key-value를 반환|
+|boolean isEmpty()|객체가 비었는지 확인|
+|Set keySet()|객체에 저장된 모든 key를 포함하는 Set반환|
+|Map.Entry lastEntry()|객체에 저장된 마지막 key(가장 큰 키)-value 반환|
+|Object lastKey()|TreeMap에 저장된 마지막 키(가장 큰 키)를 반환|
+|Map.Entry lowerEntry(Object key)|지정한 key보다 작은 key중에서 제일 큰 key-value를 반환|
+|Object lowerKey(Object key)|지정한 key보다 작은 key중에서 제일 큰 key-value를 반환|
+|NavigableSet navigableKeySet()|모든 key가 담긴 NavigableSet을 반환|
+|Map.Entry().pollFirstEntry()|객체에서 제일 작은 key를 제거하면서 반환|
+|Map.Entry().pollLastEntry()|객체에서 제일 큰 key를 제거하면서 반환|
+|Object put(Object key, Object value)|지정한 key, value를 저장|
+|void putAll(Map map)|지정한 Map에 포함된 모든 요소를 저장|
+|Object remove(Object key)|지정한 key로 저장된 객체key-value를 제거|
+|Object replace(Object k,Object v)|기존의 key(k)의 value를 새로운 value(v)로 변경|
+|boolean replace(Object key, Object oldValue, Object newValue)|기존의 key의 value를 새로운 newValue로 변경. 단, 기존의 value와 oldValue가 일치해야 함.|
+|int size()|저장된 객체의 수 반환|
+|NavigableMap subMap(Object fromKey, boolean fromInclusive, Object toKey, boolean toInclusive)|지정한 두 개의 키 사이에 있는 모든 요소가 담긴 NavagableMap반환. fromInclusive, toInclusive가 true면 범위에 포함.|
+|SortedMap subMap(Object fromKey, Object toKey)|지정한 키 사이에 있는 모든 요소가 담긴 SortedMap반환. (toKey 미포함)|
+|SortedMap tailMap(Object fromKey)|지정한 키부터 마지막 요소까지 반환|
+|NavigableMap(Object fromKey, boolean inclusive)|지정한 키부터 마지막 요소까지 반환. inclusive가 true면 fromKey 포함.|
+|Collection values()|저장된 모든 객체를 Collecton타입으로 반환|
+
+
+```java
+package com.javaex.ch11;
+
+import java.util.*;
+
+public class TreeMapEx1 {
+    public static void main(String[] args) {
+        String[] data = {"A", "K", "A", "K", "D","K","A","K","K","K","K","Z","D"};
+
+        TreeMap map = new TreeMap();
+
+        for (int i = 0; i < data.length; i ++) {
+            if(map.containsKey(data[i])) {
+                Integer value = (Integer)map.get(data[i]);
+                map.put(data[i],value+1);
+            } else {
+                map.put(data[i], 1);
+            }
+        }
+
+        Iterator iterator = map.entrySet().iterator();
+
+        System.out.println("==기본정렬==");
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry)iterator.next();
+            int value = ((Integer)entry.getValue()).intValue();
+            System.out.println(entry.getKey() + " : " + printBar('#', value) + " " + value);
+        }
+        System.out.println();
+
+        //map -> ArrayList -> Collections.sort() 정렬
+        Set set = map.entrySet();
+        List list = new ArrayList(set);
+
+        //static void sort(List list, Comparator c)
+        Collections.sort(list, new Comparator() {   //익명클래스
+            @Override
+            public int compare(Object o1, Object o2){
+                if(o1 instanceof Map.Entry && o2 instanceof Map.Entry) {
+                    Map.Entry entry1 = (Map.Entry) o1;
+                    Map.Entry entry2 = (Map.Entry) o2;
+
+                    int value1 =((Integer)entry1.getValue()).intValue();
+                    int value2 =((Integer)entry2.getValue()).intValue();
+
+                    return value2 - value1;
+                }
+                return -1;
+            }
+        });
+
+        iterator = list.iterator();
+
+        System.out.println("==값의 크기가 큰 순서로 정렬==");
+        while(iterator.hasNext()){
+            Map.Entry entry = (Map.Entry)iterator.next();
+            int value = ((Integer)entry.getValue()).intValue();
+            System.out.println(entry.getKey() + " : " + printBar('#',value) + " " + value);
+        }
+
+    } //main()
+
+    public static String printBar(char ch, int value) {
+        char[] bar = new char[value];
+
+        for(int i = 0; i < bar.length; i ++) {
+            bar[i] = ch;
+        }
+
+        return new String(bar);
+    }
+}
+
+```
+
+위 예제는 [HashMap을 이용한 예제](velog.io/@cocodori/Map)를 TreeMap으로 변경한 것이다. String클래스에 정의된 기본 정렬과, Comparator를 구현한 정렬을 비교한 것이다.
+
+참고로 익명클래스를 이용해 구현한 부분은 람다를 이용해 조금 더 간단히 쓸 수 있다.
+
+```java
+        Collections.sort(list, (Object o1, Object o2) -> {   //람다
+                if(o1 instanceof Map.Entry && o2 instanceof Map.Entry) {
+                    Map.Entry entry1 = (Map.Entry) o1;
+                    Map.Entry entry2 = (Map.Entry) o2;
+
+                    int value1 =((Integer)entry1.getValue()).intValue();
+                    int value2 =((Integer)entry2.getValue()).intValue();
+
+                    return value2 - value1;
+                }
+                return -1;
+        });
+```
+
+이렇게 바꾸면 좀 더 심플한 코드가 된다.
+
 
 
 
