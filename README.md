@@ -1832,7 +1832,7 @@ for(int i=0; i<1000;i++) {
 ```
 
 ----
-
+# Stack & Queue
 ![](https://images.velog.io/images/cocodori/post/bf6c949d-2a2e-4f7d-9e31-1ac6582ac82b/1_GNA2E1NFiJMc6cTHHPa6kw.png)
 <figcaption>출처 : https://gohighbrow.com/stacks-and-queues/</figcaption>
 
@@ -1929,6 +1929,399 @@ null저장 불가.
 ### Blocking Queue
 비어 있을 때 꺼내기와 가득 차 있을 때 넣기를
 지정된 시간동안 지연block시킴
+
+# Arrays
+
+배열을 다루기 편한 static메서드를 제공한다.
+
+## 배열의 출력
+toString()
+
+```java
+static String toString(boolean[] a)
+static String toString(byte[] a)
+static String toString(char[] a)
+...
+...
+static String toString(Object[] a)
+```
+
+println메서드처럼 모든 타입을 출력할 수 있게 오버로딩 되어 있다.
+
+## 배열 복사
+- copyOf()
+배열 전체를 복사한다.
+- copyOfRange()
+배열 일부를 복사한다.
+
+```java
+int[]  arr = {0,1,2,3,4};
+int[] arr2 = Arrays.copyOf(arr, arr.length);	//0,1,2,34
+int[] arr3 = Arrays.copyOf(arr,3)				//0,1,2
+int[] arr4 = Arrays.copyOf(arr,7)				//0,1,2,3,4,0,0
+
+int[] arr5 = Arrays.copyOfRange(arr, 2, 4);	//2,3
+int[] arr6 = Arrays.copyOfRange(arr,0,7);	//0,1,2,3,4,0,0
+```
+
+## 배열 채우기
+- fill()
+배열의 모든 요소를 지정한 값으로 채운다.
+- setAll()
+배열을 채우는 데 사용할 함수형 인터페이스를 매개변수로 받는다. 이 말은 함수형 인터페이스를 구현한 객체 또는 람다식을 지정해야 한다는 것이다.
+
+```java
+int[] arr = new int[5];
+Arrays.fill(arr, 9);	// [5,5,5,5,5]
+Arrays.setAll(arr, ()->(int)(Math.random()*5)+1;	//1-5사이 임의의 수 5개 저장.
+```
+## 배열을 List로 변환
+- asList(Object... a)
+배열을 List로 반환한다. 매개변수의 타입 가변인수여서 배열 생성 없이 저장할 요소들만 나열하는 것도 가능하다.
+```java
+List list = Arrays.asList(new Integer[]{1,2,3,4,5});
+List list2 = Arrays.asList(1,2,3,4,5);
+list.add	// Error.
+```
+asList()로 반환한 List는 크기를 변경할 수 없다.
+크기를 변경할 수 있는 List를 반환해야 한다면 이렇게 한다.
+```java
+List list = new ArrayList(Arrays.asList(1,2,3,4,5));
+```
+
+
+```java
+public interface Comparator {
+	int compare(Object o1, Object o2);
+}
+
+public interface Comparable {
+	public int CompareTo(Object o);
+}
+
+```
+# Comparable
+ 기본 정렬 기준을 구현할 때 사용한다.
+
+
+# Comparator
+ 기본 정렬 기준 외, 다른 기준으로 정렬할 때 사용한다.
+ 
+ ```java
+package com.javaex.ch11;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class ComparatorEx {
+    public static void main(String[] args) {
+        String[] strArr = {"cat", "Dog", "lion", "tiger"};
+
+        Arrays.sort(strArr);    //String의 Comparable구현에 의한 정렬
+        System.out.println("strArr : " + Arrays.toString(strArr));
+
+        Arrays.sort(strArr, String.CASE_INSENSITIVE_ORDER); //대소문자 구분 X
+        System.out.println("strArr : " + Arrays.toString(strArr));
+
+        Arrays.sort(strArr, new Descending());
+        System.out.println("strArr : " + Arrays.toString(strArr));
+
+    }
+}
+
+class Descending implements Comparator {
+    @Override
+    public int compare(Object o1, Object o2) {
+        if(o1 instanceof Comparable && o2 instanceof Comparable) {
+            Comparable c1 = (Comparable) o1;
+            Comparable c2 = (Comparable) o2;
+
+            /* -1을 곱해서 역순으로 변경 */
+            //return c1.compareTo(c2) * -1;
+
+            //혹은 순서를 바꾼다.
+            return c2.compareTo(c1);
+
+        }
+        return -1;
+    }
+}
+```
+# HashSet
+> HashSet은 Set인터페이스를 구현한 가장 대표적인 컬렉션이다.
+
+다시 상기하자면, Set은
+- 중복 허용 X
+- 순차 저장 X
+
+중복된 데이터를 저장하려고 하면 false를 반환한다. HashSet의 특징을 이용하면 중복을 쉽게 제거할 수 있다.
+
+**HashSet의 메서드**
+
+|method|설명|
+|------|----|
+|HashSet()|(생성자)객체 생성|
+|HashSet(Collection c)|지정한 컬렉션을 포함하는 객체 생성|
+|HashSet(int initialCapacity)|지정한 값을 초기용량으로 하는 객체 생성|
+|HashSet(int initialCapacity, float loadFactor)|초기 용량과 load factor를 지정하는 생성자|
+|boolean add(Object o)| 객체 저장|
+|boolean addAll(Collection c)|지정한 컬렉션에 저장된 모든 객체 저장|
+|void clear()|모든 객체 삭제|
+|Object clone()|복제해서 반환(얕은 복사)|
+|boolean contains(Object o)|지정한 객체를 포함하고 있는지 알려준다.|
+|boolean containsAll(Collection c)|지정한 컬렉션에 저장된 모든 객체를 포함하고 있는지 알려준다.|
+|boolean isEmpty()|비어있는지 확인|
+|Iterator iterartor()|Iterator반환|
+|boolean remove(Object o)|지정한 객체 삭제|
+|boolean removeAll(Collection c)|지정한 컬렉션에 저장된 객체와 동일한 것을 모두 삭제|
+|boolean retainAll(Collection c)|지정한 컬렉션에 저장된 객체와 동일한 것만 남기고 모두 삭제|
+|int size()|객체의 개수 반환|
+|Object[] toArray()|지정한 객체를 객체 배열 형태로 반환|
+|Object[] toArray(Object[] a)|지정한 객체를 주어진 객체배열a에 담는다.|
+
+load factor는 저장공간이 가득 차기 전에 미리 용량을 확보하기 위한 것이다. 기본값은 0.75. 75% 채워지면 용량이 두 배로 늘어난다.
+
+```java
+package com.javaex.ch11;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class Bingo {
+    public static void main(String[] args) {
+        Set set = new HashSet();
+
+        int[][] board = new int[5][5];
+
+        for(int i = 0; set.size()<25;i++){
+            set.add((int)(Math.random()*50)+1+"");
+        }
+
+        Iterator iterator = set.iterator();
+
+        for(int i=0; i<board.length;i++){
+            for(int j=0; j<board[i].length;j++) {
+                board[i][j] = Integer.parseInt((String)iterator.next());
+                System.out.print((board[i][j] < 10 ? "  ":" ")+board[i][j]);
+            }
+            System.out.println();
+        }
+
+    }
+}
+```
+이 예제를 실행하면 같은 숫자가 비슷한 위치에 나온다는 사실을 발견할 수 있다. HashSet은 순서를 보장하지 않고 자체적인 저장방식에 따라 순서가 결정된다. 이런 경우 HashSet보다 LinkedHashSet을 쓰는 것이 더 나은 선택이다.
+
+```java
+package com.javaex.ch11;
+
+import java.util.HashSet;
+
+public class HashSetEx3 {
+    public static void main(String[] args) {
+        HashSet set = new HashSet();
+
+        set.add("abc");
+        set.add("abc");
+
+        set.add(new Person("coco", 20));
+        set.add(new Person("coco", 20));
+
+        System.out.println(set);
+    }
+}
+
+class Person {
+    String name;
+    int age;
+
+    public Person(String name, int age){
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + " : " + age;
+    }
+}
+/*
+결과 : 
+[abc, coco : 20, coco : 20]
+*/
+```
+위 예제는 이름과 나이가 같으면 같은 사람으로 인식하려는 의도로 작성했다. 그러나 의도와 달리 결과는 두 개의 Person객체가 출력된다.
+
+HashSet의 add()는 새로운 요소를 추가하기 전 기존 요소와 같은 것인지 판별하기 위해 추가하려는 요소의 equals()와 hashCode()를 호출하므로 두 메서드를 목적에 맞게 오버라이딩 할 필요가 있다.
+
+```java
+package com.javaex.ch11;
+
+import java.util.HashSet;
+
+public class HashSetEx3 {
+    public static void main(String[] args) {
+        HashSet set = new HashSet();
+
+        set.add(new Person("coco", 20));
+        set.add(new Person("coco", 20));
+
+        System.out.println(set);
+    }
+}
+
+class Person {
+    String name;
+    int age;
+
+    public Person(String name, int age){
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Person) {
+            Person person = (Person)obj;
+            return name.equals(person.name) && age == person.age;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    @Override
+    public String toString() {
+        return name + " : " + age;
+    }
+}
+```
+
+hashCode()를 오버라이딩할 때 다음 세 가지 조건을 만족시켜야 한다.
+
+ 1. 실행 중인 애플리케이션 내 동일한 객체에 대해 여러 번 hashCode()를 호출해도 동일한 int값을 반환해야 한다. ( 실행할 때마다 동일한 값을 반환할 필요는 없다.)
+
+ 2. equals()를 이용해 true를 얻은 두 객체에 대해 각각 hashCode()를 호출해서 얻은 결과는 반드시 같아야 한다.
+
+3. equals()를 호출했을 때 false를 반환하는 두 객체는 hashCode() 호출에 대해 같은 int를 반환하는 경우가 있어도 괜찮다. 하지만 해싱hassing을 사용하는 컬렉션 성능을 향상시키기 위해서는 다른 int값을 반환하는 것이 좋다.
+
+
+# TreeSet
+
+TreeSet은 이진 검색 트리binary search tree라는 자료구조의 형태로 데이터를 저장하는 컬렉션 클래스다. 이진 검색 트리는 정렬, 검색, 범위 검색Range Search에 높은 성능을 보인다. TreeSet은 이진 검색 트리의 성능을 향상시킨 레드-블랙 트리Red-Black tree로 구현 되었다.
+
+![](https://images.velog.io/images/cocodori/post/8e5cdb76-c65b-4ea6-96fe-931b666fb3b8/tree.png)
+
+Tree는 여러 개의 node가 서로 연결된 구조다. 가장 상위에 있는 노드를 root라고 한다.
+위 아래로 연결된 두 노드를 부모-자식 관계라고 한다. 각 노드에 최대 2개의 노드를 연결할 수 있다.
+
+
+![](https://images.velog.io/images/cocodori/post/21ae286a-7102-4208-9316-9dbc16350822/image.png)
+출처 : 자바의 정석 기초편 요약집
+
+위 표는 TreeSet에 7,4,9,1,5를 순서대로 저장한다고 했을 때 진행과정이다.
+
+1. 맨 처음 저장되는 데이터 7이 루트root가 된다.
+2. 그 다음 저장되는 값은 루트와 비교해서 루트보다 크면 오른쪽, 작으면 왼쪽에 저장된다.
+
+이처럼 Tree구조는 검색이나 정렬에는 뛰어난 성능을 보이지만 데이터의 추가나 삭제에서는 효율이 떨어진다.
+
+특징을 정리하면 이렇다.
+- 모든 노드는 최대 두 개의 자식 노드를 가질 수 있다.
+- 왼쪽 자식 노드는 부모 노드 값보다 작고, 오른쪽 자식 노드는 부모노드의 값보다 커야 한다.
+- 노드의 추가, 삭제에 시간이 걸린다.
+- 검색, 정렬에 유리하다.
+- 중복값 저장하지 않는다.
+
+
+**TreeSet의 메서드**
+
+
+|method|설명|
+|------|----|
+|TreeSet(Collection c)|지정한 컬렉션을 가지는 TreeSet 생성|
+|TreeSet(Comparator comp)|지정한 정렬조건으로 정렬하는 TreeSet생성|
+|TreeSet(SortedSet s)|주어진 SortedSet을 구현한 컬렉션을 저장하는 객체 Tree Set생성|
+|boolean add(Object o)<br>boolean addAll(Collecton c)|지정한 객체o 또는 Collection의 객체를 추가|
+|Object ceiling(Object o)|지정한 객체와 같은 객체를 반환. 없으면 큰 값을 가진 객체 중 제일 가까운 값의 객체를 반환. 없으면 null|
+|void clear()|모든 객체 삭제|
+|Object clone()|객체를 복제하여 반환|
+|Comparator comparator()|정렬 기준을 반환|
+|boolean contains(Object o)<br>boolean containsAll(Collection c)|지정한 객체 또는 Collection의 객체를 포함하는지 확인|
+|NavigableSet descendingSet()|TreeSet에 저장된 요소를 역순으로 정렬해서 반환|
+|Ojbect first()|정렬된 순서에 첫 번째 객체를 반환|
+|Object floor(Object o)|지정한 객체와 같은 객체를 반환. 없으면 작은 값을 가진 객체 중에서 제일 가까운 값의 객체를 반환. 없으면 null|
+|SortedSet headSet(Object toElement)|지정한 객체보다 작은 값의 객체를 반환|
+|NavigableSet headSet(Object toElement, boolean inclusive)|지정한 객체보다 작은 값의 객체를 반환 inclusive가 true면 같은 값 객체도 포함|
+|Object higher(Object o)|지정한 객체보다 큰 값을 가진 객체 중 제일 가까운 객체를 반환, 없으면 null|
+|boolean isEmpty()|TreeSet이 비었는지 확인|
+|Iterator iterator()|Iterator 반환|
+|Object last()|정렬한 순서에서 마지막 객체를 반환|
+|Object lower(Object o)|지정한 객체보다 작은 값을 가진 객체 중 제일 가까운 값의 객체를 반환. 없으면 null|
+|Object pollFirst()|첫 번째 요소(제일 작은 값의 객체)를 반환|
+|Object pollLast()|마지막 번째 요소(제일 큰 값의 객체)를 반환|
+|boolean remove(Object o)|지정한 객체를 삭제|
+|boolean retainAll(Collection c)|주어진 컬렉션과 공통된 요소만 남기고 삭제|
+|boolean size()|객체의 수 반환|
+Spliterator spliterator()|Spliterator반환|
+|SortedSet subSet(Object fromElement, Object toElement)|범위 검색 from~to사이의 결과를 반환. 끝 범위toElement은 포함되지 않음|
+|Navigable< E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive)|범위 검색. from-to사이를 반환. fromInclusvie가 true면 시작 값 포함, toInclusive가 true면 마지막값 포함|
+|SortedSet tailSet(Object fromElement)|지정한 객체보다 더 큰 값의 객체를 반환|
+|Object[] toArray()|저장한 객체를 객체배열로 반환|
+|Object[] toArrays(Object[] a)|저장한 객체를 주어진 객체배열에 저장|
+
+```java
+package com.javaex.ch11;
+
+import java.util.TreeSet;
+
+public class TreeSetEx1 {
+    public static void main(String[] args) {
+        TreeSet set = new TreeSet();
+
+        String from = "b";
+        String to = "d";
+
+        set.add("abc");
+        set.add("ailen");
+        set.add("bat");
+        set.add("car");
+        set.add("Car");
+        set.add("disc");
+        set.add("dance");
+        set.add("dZZZZ");
+        set.add("dzzzz");
+        set.add("elephant");
+        set.add("elevator");
+        set.add("fan");
+        set.add("flower");
+
+        System.out.println(set);
+        System.out.println("range search : from " + from + " to : "+to);
+        System.out.println("result 1 : " + set.subSet(from, to));
+        System.out.println("result 2 : " + set.subSet(from,to+"zzz"));
+    }
+}
+
+/*
+결과 : 
+[Car, abc, ailen, bat, car, dZZZZ, dance, disc, dzzzz, elephant, elevator, fan, flower]
+range search : from b to : d
+result 1 : [bat, car]
+result 2 : [bat, car, dZZZZ, dance, disc]
+*/
+```
+
+subSet("b", "d")로 지정하면
+b~d사이의 문자로 시작하는 데이터를 출력한다.
+마지막 문자인 d는 출력하지 않는다.
+
+
+
 
 
 
