@@ -2743,7 +2743,727 @@ public class TreeMapEx1 {
 
 이렇게 바꾸면 좀 더 심플한 코드가 된다.
 
+----
 
+> 자바의 정석을 참고했습니다.
+
+# Generics
+컬렉션 클래스에 컴파일 시 타입 체크를 해주는 기능.
+
+장점
+- 타입 안정성을 높여서, 의도하지 않은 타입의 객체가 저장되는 것을 막는다.
+
+
+# 지네릭 클래스
+```java
+class Box<T> {	
+	
+    T item;
+    void setItem(T item) {
+    	this.item = item;
+    }
+    
+    T getItem() {
+    	return item
+    }
+}
+```
+Box&lt;T&gt;에서 T를 타입 변수라고 한다. 타입변수는 꼭 T가 아니라도 상황에 맞는 다른 알파벳을 지정할 수 있다.
+
+위에서 정의한 제네릭 클래스 Box의 객체를 생성한다고 했을 때, &lt;T&gt;가 무슨 타입인지 지정해야 한다.
+```java
+Box<String> box = new Box<String>();
+```
+new Box<String&gt(); 이 부분은 당연히 String이 될 것이므로 new Box<>()로 적어도 된다.
+
+## 용어
+```java
+class Box<T> { }
+```
+- Box<T&gt;	
+제네릭 클래스 T의 Box, T Box
+- <T&gt;	
+타입 변수, 타입 매개변수
+- Box
+원시타입raw type
+
+> 지정한 타입을 매개변수화된 타입parameterized type이라고 한다.
+
+## 제한
+- static멤버에 타입 변수를 사용할 수 없다.
+```java
+static T item;	// 에러
+```
+타입변수는 인스턴스 멤버로 간주하기 때문이다.
+static변수는 매개변수화된 타입에 상관없이 동일한 것이어야 한다.
+
+- 지네릭 타입 배열 생성 불가
+```java
+T[] itemArr;	//T타입 배열을 위한 참조변수
+...
+T[] toArray() {
+	T[] tmpArr = new T[itemArr.length];	//Error!
+    return tmpArr
+}
+```
+선언T[] itemArr할 수 있지만 생성new할 수는 없다.
+바로 'new'연산자 때문이다. new는 컴파일 시점에 타입 T가 무엇인지 정확히 알아야 한다. 그런데 지네릭 클래스는 컴파일 시점에 T가 어떤 타입이 될 것인지 알 수 없다.
+
+# 지네릭 클래스 사용
+
+지네릭 클래스 Box<T&gt;를 사용하는 예제 코드다.
+자세한 것은 주석에.
+
+```java
+package com.javaex.generics;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FruitsBoxEx1 {
+    public static void main(String[] args) {
+        //매개변수화된 타입으로, 어떤 타입이든 올 수 있다.
+        Box<Fruit> fruitBox = new Box<>();  // == new Box<Fruit>();
+        Box<Apple> appleBox = new Box<>();
+        Box<Toy> toyBox = new Box<>();
+        /*
+        *Box<Fruit> box = new Box<Apple>(); 은 매개변수화된 타입이 다르므로 에러가 발생한다.
+        *반드시 참조 변수와 생성자의 매개변수화된 타입이 일치해야만 한다. 
+        *다형성은
+        * Box<Apple> = new FruitBox<Apple>();
+        * 이렇게 사용할 수 있다.
+        * */
+
+        //void T add(T item) -> void add(Fruit item)
+        fruitBox.add(new Fruit());
+        fruitBox.add(new Grape());
+        fruitBox.add(new Apple());
+
+        appleBox.add(new Apple());
+//        appleBox.add(new Graple());   //사과 박스엔 사과만 담을 수 있다.
+
+        toyBox.add(new Toy());
+
+        System.out.println("fruitBox : " + fruitBox);
+        System.out.println("appleBox : " + appleBox);
+        System.out.println("toyBox : " + toyBox);
+    }
+}
+
+class Box<T> {
+    List<T> list = new ArrayList<>();
+
+    void add(T item) {
+        list.add(item);
+    }
+
+    T getItem(int i) {
+        return list.get(i);
+    }
+
+    int size() {
+        return list.size();
+    }
+
+    public String toString(){
+        return list.toString();
+    }
+}
+
+
+class Fruit {
+    @Override
+    public String toString(){
+        return "Fruit";
+    }
+}
+
+class Apple extends Fruit {
+    @Override
+    public String toString(){
+        return "Apple";
+    }
+}
+
+class Grape extends Fruit {
+    @Override
+    public String toString(){
+        return "Grape";
+    }
+}
+class Toy {
+    @Override
+    public String toString(){
+        return "Toy";
+    }
+}
+```
+----
+
+# 제한된 지네릭 클래스
+
+ 지네릭은 타입 안정성을 보장한다고 했다. <T&gt;타입으로 무슨 타입이든 받는 것은 과연 안전할까? 좀더 안전하게 <T&gt;에 지정할 수 있는 타입을 제한할 수 있는 방법이 있다.
+ 
+
+```java
+class Box<T extends Fruit>
+```
+
+간단하다. 지네릭 타입에 'extends'를 사용하면 된다. 구태여 설명할 것도 없겠지만, 매개변수화된 타입으로 Fruuit을 상속하는 클래스만 받겠다는 뜻이다. 참고로 인터페이스를 구현한 클래스를 매개변수화된 타입으로 받겠다고 선언할 때도 'extends'를 사용한다.
+
+```java
+package com.javaex.generics;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FruitsBoxEx2 {
+    public static void main(String[] args) {
+        FruitBox<Fruit> fruitBox = new FruitBox<>();
+        FruitBox<Apple> appleBox = new FruitBox<>();
+        FruitBox<Grape> grapeBox = new FruitBox<>();
+        ToyBox<Toy> toyBox = new ToyBox<>();
+
+        fruitBox.add(new Fruit());
+        fruitBox.add(new Apple());
+        fruitBox.add(new Grape());
+
+        appleBox.add(new Apple());
+
+        grapeBox.add(new Grape());
+
+        System.out.println("fruitBox - " + fruitBox);
+        System.out.println("appleBox - " + appleBox);
+        System.out.println("grapeBox - " + grapeBox);
+    }
+
+}
+//Eatable을 구현하면서, Fruit를 상속하는 타입만 <T>로 받는다.
+class FruitBox<T extends Fruit & Eatable> extends Box<T> {}
+//Funable을 구현한 타입만 <T>로 받는다.
+class ToyBox<T extends Funable> {}
+
+class Box<T> {
+    List<T> list = new ArrayList<>();
+
+    void add(T item) {
+        list.add(item);
+    }
+
+    T getItem(int i) {
+        return list.get(i);
+    }
+
+    int size() {
+        return list.size();
+    }
+
+    public String toString(){
+        return list.toString();
+    }
+}
+
+interface Eatable {}
+interface Funable {}
+
+class Fruit implements Eatable {
+    @Override
+    public String toString(){
+        return "Fruit";
+    }
+}
+
+class Apple extends Fruit {
+    @Override
+    public String toString(){
+        return "Apple";
+    }
+}
+
+class Grape extends Fruit {
+    @Override
+    public String toString(){
+        return "Grape";
+    }
+}
+class Toy implements Funable{
+    @Override
+    public String toString(){
+        return "Toy";
+    }
+}
+
+
+```
+
+간단하게 조금 설명하자면.
+
+![](https://images.velog.io/images/cocodori/post/4c417bde-d16e-408c-b7d0-f14f78f5ed17/box.svg)
+
+```java
+class Box<T>
+```
+이 클래스는 세상 모든 박스의 원형이다. 말하자면 나로써는 감히 상상만 해볼 수밖에 없는 Box의 이데아! 우리는 이 박스를 이용해서 세상에 존재하는 모든 물건을 담을 수도 있을 것이다. 그러면 아마 잡동사니 박스가 되겠지. 그것을 도저히 견딜 수 없는 인간. 그러니까 너무나 게을러서 이 박스에 뭐가 들었는지 하나하나 찾아보기가 너무나 귀찮은 인간은 **분류**라는 것을 하기로 했다.
+
+![](https://images.velog.io/images/cocodori/post/c8e4f460-1040-4f66-8a4b-17bef179fa85/box-icon-png-25.jpg)
+
+박스를 여러 개로 나눈 다음, 1번 박스에는 먹을 수 있는 과일만 담기로 하고, 2번 박스에는 장난감만 담기로 한다. 
+코드로 이렇겠지.
+```java
+class FruitBox<T extends Fruit & Eatable> extends Box<T> {}
+class ToyBox<T extends Funable> {}
+```
+이렇게 하면 언제든지 1번 박스에는 과일만, 2번 박스에는 장난감만 있을 것이다. 어쩌다 실수로 과일박스에 장난감을 넣을 수도, 장난감박스에 과일을 넣을 수도 없다.
+
+그러니까 제한된 제네릭 클래스 얘기다.
+
+
+----
+
+> 참고 : 자바의 정석
+
+# 와일드 카드
+기호 '?' 표현하는데, 와일드카드는 어떤 타입도 될 수 있다.
+
+아래 코드를 보자.
+
+
+```java
+package com.javaex.generics;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FruitsBoxEx3 {
+    public static void main(String[] args) {
+        FruitBox<Fruit> fruitBox = new FruitBox<>();
+        FruitBox<Apple> appleBox = new FruitBox<>();
+
+        fruitBox.add(new Apple());
+        fruitBox.add(new Grape());
+
+        appleBox.add(new Apple());
+
+        System.out.println(Juicer.makeJuice(fruitBox));
+        System.out.println(Juicer.makeJuice(appleBox));
+    }
+
+}
+
+class Juice {
+    String name;
+
+    public Juice(String name) {
+        this.name = name + "Juice";
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+}
+
+class Juicer {
+    static Juice makeJuice(FruitBox<? extends Fruit> box) {
+        String tmp = "";
+
+        for(Fruit fruit: box.getList()) {
+            tmp += fruit + " ";
+        }
+
+        return new Juice(tmp);
+    }
+}
+
+class FruitBox<T extends Fruit> extends Box<T> {}
+
+class Box<T> {
+    List<T> list = new ArrayList<>();
+
+    List<T> getList() {
+        return list;
+    }
+
+    void add(T item) {
+        list.add(item);
+    }
+
+    T getItem(int i) {
+        return list.get(i);
+    }
+
+    int size() {
+        return list.size();
+    }
+    @Override
+    public String toString(){
+        return list.toString();
+    }
+}
+```
+Fruit, Grape, Apple 클래스는 제외했다. [이전 글](https://velog.io/@cocodori/Generics) 에서 볼 수 있다.
+
+**핵심**은 이 부분이다.
+
+```java
+static Juice makeJuice(FruitBox<? extends Fruit> box)
+```
+
+만약, 와일드카드를 사용할 수 없다고 가정하자.
+
+```java
+static Juice makeJuice(FruitBox<Fruit> box)
+static Juice makeJuice(FruitBox<Apple> box)
+static Juice makeJuice(FruitBox<Group> box)
+```
+
+이런 식으로 중복 정의했을 것이다. 그러나 이 코드는 컴파일 에러가 발생한다. **지네릭 타입이 다른 것만으로 오버로딩이 성립하지 않는다.** 이 문제를 해결하는 것이 와일드카드'?'이다.
+
+'?'자체는 Object와 같다. 'extends'와 'supper'로 상한과 하한을 제한한다.
+
+```java
+<? extends T> // 와일드카드 상한 제한. T와 그 자손만 가능
+<? super T>	//와일드카드 하한제한. T와 그 조상들만 가능
+<?>	// == 제한 없음. 모든 타입 가능.(==<? extends Object>)
+```
+
+위 코드에서 와일드카드를 적용한 static메서드를 호출하는 부분
+```java
+System.out.println(Juicer.makeJuice(fruitBox);
+System.out.println(Juicer.makeJuice(appleBox);
+
+```
+
+와일드카드를 사용함으로써 모든 종류의 FruitBox를 매개변수의 인자로 받을 수 있다. 그러나 box의 요소가 Fruit의 자손이라는 보장이 없으므로 for문에서 box에 저장된 요소를 Fruit타입 참조변수로 받을 수 없다.
+
+```java
+for(Fruit fruit : box.getList()) {
+	...
+}
+```
+위 코드에서 box.getList()가 Fruit가 아닐 수도 있으므로 에러가 발생해야 맞지만,
+```java
+	class FruitBox<T extends Fruit> extends Box<T>
+```
+지네릭 클래스 FruitBox선언부에 이미 Fruit를 상속하는 타입만을 받도록 제한했기 때문에 아무 문제 없이 컴파일된다.
+
+```java
+	package com.javaex.generics;
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class FruitBoxEx4 {
+    public static void main(String[] args) {
+        FruitBox<Apple> appleBox = new FruitBox<>();
+        FruitBox<Grape> grapeBox = new FruitBox<>();
+
+        appleBox.add(new Apple("Green Apple", 300));
+        appleBox.add(new Apple("Green Apple", 100));
+        appleBox.add(new Apple("Green Apple", 200));
+
+        grapeBox.add(new Grape("Pupple Grape", 400));
+        grapeBox.add(new Grape("Pupple Grape", 200));
+        grapeBox.add(new Grape("Pupple Grape", 300));
+
+        System.out.println("===========정렬 전===========");
+        System.out.println("appleBox : " + appleBox);
+        System.out.println("grapeBox : " + grapeBox);
+        System.out.println();
+
+        Collections.sort(appleBox.getList(), new FruitComp());
+        Collections.sort(grapeBox.getList(), new FruitComp());
+
+        System.out.println("===========정렬 후===========");
+        System.out.println("appleBox : " + appleBox);
+        System.out.println("grapeBox : " + grapeBox);
+    }
+}
+
+class Fruit {
+    String name;
+    int weight;
+
+    public Fruit(String name, int weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return name + "("+weight+")";
+    }
+}   //end - Fruit
+
+class Apple extends Fruit {
+    public Apple(String name, int weight) {
+        super(name, weight);
+    }
+}
+
+class Grape extends Fruit {
+    Grape(String name, int weight) {
+        super(name, weight);
+    }
+}
+
+class FruitComp implements Comparator<Fruit> {  //내림차순
+
+    @Override
+    public int compare(Fruit o1, Fruit o2) {
+        return o2.weight - o1.weight;
+    }
+}
+
+class AppleComp implements Comparator<Apple> {
+
+    @Override
+    public int compare(Apple o1, Apple o2) {
+        return o2.weight - o1.weight;
+    }
+}
+
+class GrapeComp implements Comparator<Grape> {
+    @Override
+    public int compare(Grape o1, Grape o2) {
+        return o2.weight - o1.weight;
+    }
+}
+
+class FruitBox<T extends Fruit> extends Box<T> { }
+
+class Box<T> {
+    List<T> list = new ArrayList<>();
+
+    void add(T item) {
+        list.add(item);
+    }
+
+    T get(int i) {
+        return list.get(i);
+    }
+
+    List<T> getList() {
+        return list;
+    }
+
+    int size() {
+        return list.size();
+    }
+
+    @Override
+    public String toString() {
+        return list.toString();
+    }
+
+}
+```
+
+Collections의 sort()를 이용해서 무게별로 정렬하는 예제다.
+```java
+	static <T> void sort(List<T> list, Comparator<? super T> c>
+```
+sort()의 선언부다. 
+
+만약 와일드 카드를 사용하지 않았다고 가정한다면
+```java
+	static <T> void sort(List<T> list, Comparator<T> c)
+```
+선언부는 이렇게 된다. <T&gt;에 Apple을 대입하면 이렇게 바뀐다.
+
+```java
+	static <Apple> void sort(List<Apple> list, Comparator<Apple> c)
+```
+List<Apple&gt;를 정렬하기 위해 Comparator<Apple&gt;가 필요하다. 그래서 Comparator<Apple&gt;를 구현한 클래스를 만들어야 한다.
+```java
+class AppleComp implements Comparator<Apple> {
+	@Overrride
+    public int compare(Apple o1, Apple o2) {
+    	return o2.weight - o1.weight;
+    }
+}
+```
+
+만약 Apple이 아니고 Grape가 대입된다면?
+똑같이 Comparator<Grape&gt;를 구현한 클래스를 하나 더 정의해야 한다.
+타입만 다를 뿐 완전히 똑같은 클래스를 만들어야 한다는 것은 낭비다. 이 문제를 해결하기 위해 타입 매개변수에 하한 제한(super) 와일드카드를 적용해둔 것이다.
+
+그럼 Apple이 들어오든, Grape이 들어오든 상관 없이 정렬할 수 있다.
+```java
+
+static <Apple> void sort(List<Apple> list, Comparator<? super Apple> c>
+    
+static <Grape> void sort(List<Grape> list, Comparator<? super Grape> c>
+
+```
+Comparator <? super Apple>이라는 의미는 Apple과 그 조상이 가능하다는 뜻이다.
+Comparator <Apple&gt;, Comparator<Fruit&gt;, Comparator<Object&gt;
+
+그래서
+```java
+class FruitComp implements Comparator<Fruit> { 
+    @Override
+    public int compare(Fruit o1, Fruit o2) {
+        return o2.weight - o1.weight;
+    }
+}```
+이렇게 정의해두면 Apple과 Grape을 모두 정렬할 수 있다.
+### 질문
+- 왜 와일드카드 대신 <T&gt;로 받지 못하나?
+
+----
+
+# 지네릭 메서드
+
+```java
+static <T> void sort(List<T>, Comparator<? super T> c)
+```
+메서드 선언부 반환타입 앞에 지네릭을 사용하는 것을 지네릭 메서드라 한다.
+
+지네릭 클래스에 적용된 타입 매개변수와 지네릭 메서드의 적용된 타입 매개변수는 별개다.
+
+[이전 글](https://velog.io/@cocodori/Generics-%EC%99%80%EC%9D%BC%EB%93%9C%EC%B9%B4%EB%93%9C) 에서 만들었던 makeJuice()를 지네릭 메서드로 바꾸면 이렇다.
+```java 
+    static Juice makeJuice(FruitBox<? extends Fruit> box) {
+        String tmp = "";
+
+        for(Fruit fruit: box.getList()) {
+            tmp += fruit + " ";
+        }
+
+        return new Juice(tmp);
+	}
+```
+이 메서드를
+
+```java
+    static<T extends Fruit> Juice makeJuice(FruitBox<T> box) {
+        String tmp = "";
+
+        for(Fruit fruit: box.getList()) {
+            tmp += fruit + " ";
+        }
+
+        return new Juice(tmp);
+
+	}
+```
+이렇게 바꿀 수 있다.
+
+이럴 경우 호출할 때 타입 변수를 지정해야 하지만,
+보통은 컴파일러가 추정할 수 있기 때문에 생략할 수 있다.
+
+```java
+Juicer.<Apple>makeJuicer(appleBox)
+
+//생략가능
+Juicer.makerJuicer(appleBox)
+```
+
+지네릭 메서드는 매개변수 타입이 복잡할 때 유용하다.
+```java
+public static void printAll(List<? extends Product> list1, List<? extends Product list2)
+```
+ 이렇게 긴 매개변수 부분을 조금이라도 줄이고 싶을 때
+```java
+public static <T enxtends Product> void printAll(List<T> list1, List<T> list2)
+```
+지네릭 메서드를 쓰면 좀 더 간결하게 쓸 수 있다. 타입 변수 T로 Product를 상속하는 타입만 받겠다는 의미는 동일하지만, 아래 코드가 좀더 간결하다.
+
+마지막으로 약간 복잡한 제네릭 메서드다.
+```java
+public static <T extends Comparable<? super T>> void sort(List<T> list)
+```
+- List<T&gt;
+타입변수 T를 매개변수로 받겠다고 선언했다. 
+
+- <T extends Comparable<? super T>>
+'T'는 Comparable을 구현한 클래스이면서, 'T 또는 그 조상 타입을 비교하는 Comparable이어야 한다.(T가 Fruit를 상속하는 Apple이라면, Apple, Fruit, Object를 대입할 수 있다.)
+
+# 지네릭 형변환
+- 지네릭 <-->  non-지네릭(raw type) 형변환은 항상 가능하다.
+
+- 지네릭 <--> 지네릭은 형변환 불가능하다.
+
+- 와일드카드를 사용한 지네릭은 형변환 가능
+```java
+Box<? extends Object> wBox = new Box<String>();
+```
+ 
+java.util.Optional 소스를 보면서 지금까지 배운 것 정리.
+```java
+public final class Optional<T> {
+
+    private static final Optional<?> EMPTY = new Optional<>(); //new Optional<Object>();
+    private final T value;
+
+    //......
+
+    public static <T> Optional<T> empty() {
+        Optional<T> t = (Optional<T>) EMPTY;
+        return t;
+    }
+}
+```
+  1.static상수 EMPTY에 비어있는 Optional객체를 생성해서 저장했다가 empty()를 호출하면 EMPTY를 형변환해서 반환.
+  
+  ```java
+  Optional<?> EMPTY = new Optional<>();
+-> Optional<? extends Object> EMPTY = new Optional<>();
+-> Optional<? extends Object> EMPTY = new Optional<Object>();
+  ```
+
+EMPTY의 타입을 Optional<Object&gt;가 아니라 Optional<?&gt;로 선언한 이유는 Optional<T&gt;로 형변환 가능하기 때문이다.
+
+```java
+        Optional<T> t = (Optional<T>) EMPTY;	//<?> -> <T>
+  ```
+
+  # 지네릭 타입 제거
+  이전 버전과 호환을 위해 컴파일 할 때 지네릭 타입은 제거된다.
+  
+  1. 지네릭 타입의 경계bound 제거
+  &lt;T extends Fruit&gt;라면 T는 Fruit로 치환한다. T인 경우 T는 Object로 치환한다.
+     ```java
+  class Box<T extends Fruit> {
+  	void add(T t) {
+  		...
+  	}
+  }
+  ```
+  이 코드는 컴파일 후에 
+  
+  ```java
+  class Box {
+  	void add(Fruit t) {
+  		....
+  	}
+  }``` 
+  
+  
+  이렇게 바뀐다.
+  
+ 2. 지네릭 타입을 제거하고 타입이 일치하지 않으면 형변환을 추가한다.
+
+  ```java
+  T get(int i) {
+  	return list.get(i);
+  }
+  ```
+  
+  위 코드는 컴파일 후에
+  
+  ```java
+  Object get(int i){
+  	return (Fruit)list.get(i);
+  }
+  ```
+  이렇게 바뀐다.
+  
+  ----
 
 
 
