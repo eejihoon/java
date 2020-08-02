@@ -3464,6 +3464,321 @@ EMPTY의 타입을 Optional<Object&gt;가 아니라 Optional<?&gt;로 선언한 
   이렇게 바뀐다.
   
   ----
+# Enum
+> 서로 관련된 상수를 편리하게 선언하기 위한 것. 여러 상수를 정의할 때 사용한다.
+
+특징
+- 타입에 안전한 열거형typesafe enumns
+ 실제 값이 같아도 타입이 다르면 컴파일 에러가 발생한다.
+ 
+
+- 상수의 값이 바뀌면 해당 상수를 참조하는 모든 소스를 다시 컴파일 해야 하는데, 열거형을 이용하면 그러지 않아도 된다.
+
+- 열거형끼리 비교할 경우에는 equals()가 아닌 '=='로 비교 가능
+	'<'이나 '>' 같은 비교연산자는 사용할 수 없고 compareTo()만 가능.
+    
+- switch문 조건식에 사용 가능
+
+## java.lang.Enum
+
+**Enum의 메서드**
+
+
+|Method|설명|
+|-----|----|
+|Class<E&gt; getDeclaringClass()|열거형의 Class객체를 반환|
+|String name()|열거형 상수의 이름을 문자열로 반환|
+|int ordinal() |열거형 상수가 정의된 순서를 반환 (0부터)|
+|T valueOf(Class<T&gt; enumType, String name)|지정한 열거형에서 name과 일치하는 열거형 상수를 반환한다.|
+
+
+이것 외에 values()처럼 컴파일러가 자동으로 추가해주는 메서드가 하나 더 있다.
+```java
+	static E valueOf(String)
+```
+이 메서드를 사용하면 열거형 상수의 이름으로, 문자열 상수에 대한 참조를 얻을 수 있다.
+
+간단한 enum 사용 예제
+```java
+package com.javaex.enums;
+
+/*enum 정의*/
+enum Direction {
+    EAST,
+    SOUTH,
+    WEST,
+    NORTH	//세미콜론 사용 안 함
+}
+
+public class EnumEx1 {
+    public static void main(String[] args) {
+        /*enum 사용*/
+        Direction direction1 = Direction.EAST;
+        Direction direction2 = Direction.valueOf("WEST");
+
+        //지정한 enum에서 name과 일치하는 열거형 상수를 반환한다.
+        //T valueOf(Class<T> enumType, String name)
+        Direction direction3 = Enum.valueOf(Direction.class, "EAST");
+
+        //enum 비교
+        System.out.println("direction1 : " + direction1);
+        System.out.println("direction2 : " + direction2);
+        System.out.println("direction3 : " + direction3);
+        System.out.println("direction1 == direction2 ? " + (direction1 == direction2));
+        System.out.println("direction1 == direction3 ? " + (direction1 == direction3));
+        System.out.println("direction1.equals(direction3) ? " + direction1.equals(direction3));
+        System.out.println("direction1.compareTo(direction3) ? " + direction1.compareTo(direction3));
+        System.out.println("direction1.compareTo(direction2) ? " + direction1.compareTo(direction2));
+
+    }
+}
+
+/*
+결과
+direction1 : EAST
+direction2 : WEST
+direction3 : EAST
+direction1 == direction2 ? false
+direction1 == direction3 ? true
+direction1.equals(direction3) ? true
+direction1.compareTo(direction3) ? 0
+direction1.compareTo(direction2) ? -2
+*/
+```
+
+# 열거형에 멤버 추가
+ordinal()을 열거형 상수 값으로 사용하지 않는 것이 좋다. 이 값은 내부적인 용도로만 사용한다.
+열거형 상수 값이 불연속적인 경우 직접 지정할 수 있다.
+```java
+	enum Directon {
+    	EAST(1), 
+        SOUTH(-5), 
+        WEST(-3), 
+        NORTH(9); //세미콜론 사용
+     	} 
+```
+이렇게 설정했다면 지정한 값을 저장할 수 있는 인스턴스 변수와 생성자를 추가해야 한다.
+주의할 점은 **열거형 상수를 모두 정의한 다음 다른 멤버를 추가해야 한다**는 것이다.
+그리고 열거형의 생성자는 외부에서 호출할 수 없다.(private)
+필요하다면 하나의 열겨형 상수에 여러 값을 지정할 수 있다. 그에 맞게 변수와 생성자를 새로 추가해줘야 한다.
+
+```java
+enum Direction {
+    /*값을 직접 지정*/
+    EAST(1, "→"),
+    SOUTH(2, "↓"),
+    WEST(3, "←"),
+    NORTH(4, "↑");
+
+    /*enum에 멤버 추가
+     * 반드시 final이어야 할 필요는 없다.
+     * 다만 value는 열거형 상수의 값을 저장하기 위한 것이므로 final을 붙였다.
+     * */
+    //Directoin배열에 Direction에 선언된 모든 상수를 저장.
+    private static final Direction[] DIR_ARR = Direction.values();
+    private final int value;
+    private final String symbol;
+
+    //생성자
+    private Direction(int value, String symbol) {
+        this.value = value;
+        this.symbol = symbol;
+    }
+
+    public int getValue() {
+        return this.value;
+    }
+
+    public String getSymbol() {
+        return this.symbol;
+    }
+
+    /*입력 받은 방향을 반환하는 메서드*/
+    public static Direction of(int dir) {
+        if (dir < 1 || dir > 4) {   //유효성 검사
+            throw new IllegalArgumentException("Invalid value :" + dir);
+        }
+
+        return DIR_ARR[dir - 1];
+    }
+
+    /*방향을 회전하는 메서드. num의 값만큼 90도씩 시계방향으로 회전*/
+    public Direction rotate(int num) {
+        num = num % 4;
+
+        //num이 음수일 때는 시계반대방향으로 회전
+        if (num < 0) {
+            num += 4;
+        }
+
+        return DIR_ARR[(value - 1 + num) % 4];
+    }
+
+    @Override
+    public String toString() {
+        return name() + getSymbol();
+    }
+
+}   //end - class
+
+```
+
+# 열거형에 추상 메서드 추가
+
+- 열거형 내에 추상 메서드를 구현하면, 각각의 열거형 상수는 반드시 추상 메서드를 구현해야 한다.
+```java
+enum Transportation {
+    /*{}안에서 추상 메서드 구현*/
+    BUS(100) {
+        int fare(int distance) {
+            return distance*BASIC_FARE;
+        }
+    },
+    TRAIN(150) {
+        int fare(int distance) {
+            return distance*BASIC_FARE;
+        }
+    },
+    SHIP(100){
+        int fare(int distance) {
+            return distance*BASIC_FARE;
+        }
+    },
+    AIRPLANE(300){
+        int fare(int distance) {
+            return distance*BASIC_FARE;
+        }
+    };
+
+    protected final int BASIC_FARE; //protected로 잡아야 상수에서 접근 가능
+
+    Transportation(int basicFare) {
+        BASIC_FARE = basicFare;
+    }
+
+    public int getBasicFare() {
+        return BASIC_FARE;
+    }
+
+    /*추상 메서드*/
+    abstract int fare(int distance);
+}
+```
+
+# 열거형의 이해
+```java
+enum Transportation{
+    BUS,
+    TRAIN,
+    SHIP,
+    AIRPLANE
+}
+```
+이런 Enum이 정의 되어 있을 때 각각의 열거형 상수는 Transportation객체다.
+
+이렇게 클래스로 바꿀 수 있을 것이다.
+
+```java
+class Transportation {
+    static final Direction BUS = new Direction("BUS");
+    static final Direction TRAIN = new Direction("TRAIN");
+    static final Direction SHIP = new Direction("SHIP");
+    static final Direction AIRPLANE = new Direction("AIRPLANE");
+
+    private String name;
+
+    public Transportation(String name) {
+        this.name = name;
+    }
+}
+```
+
+Direction클래스의 static상수 BUS, TRAIN, SHIP, AIRPLANE의 값은 객체의 주소다. 이 값은 바뀌지 않는다. 그래서 '=='로 비교할 수 있다.
+ 
+```JAVA
+//타입 T는 MyEnum<T>의 자손이어야 한다.
+abstract class MyEnum<T extends MyEnum<T>> implements Comparable<T> {
+    static int id = 0;  //객체에 붙일 일련번호
+    int ordinal;
+    String name = "";
+
+    MyEnum(String name) {
+        this.name = name;
+        ordinal = id++; //객체 생성할 때마다 일련번호 1씩 증가
+    }
+
+    public int ordinal() {
+        return this.ordinal;
+    }
+
+    public int compareTo(T t) {
+        //T는 반드시 MyEnum의 자손이므로 ordinal()을 가지고 있다.
+        return ordinal - t.ordinal();
+    }
+}   // end - MyEnum
+```
+
+모든 클래스는 추상클래스 Enum의 자손이다. Enum을 위 코드는 MyEnum이다.
+Comparable인터페이스를 구현해서 열거형 상수간 비교할 수 있게 만들었다.
+
+만약 클래스 선언부를
+
+```java
+abstract class MyEnum<T> implements Comparable<T>
+```
+이렇게 선언했다면 compareTo()를 구현할 떼 ordinal()을 사용할 수 없었을 것이다. 타입변수 'T'가 ordinal()을 가지고 있는지 알 수 없기 때문이다. 하지만 클래스를 선언할 때 상한 제한extends을 걸었기 때문에 T는 반드시 MyEnum의 자손이다. ordinal()을 쓰는 데 아무런 문제가 없다는 말이다.
+
+이렇게 추상 메서드를 추가한 다음 Transportation클래스에서 MyEnum을 상속하도록 하고,
+내부에서 쓰는 abstract메서드를 하나 추가한다.
+```java
+abstract class MyTransportation extends MyEnum {
+    static final MyTransportation BUS = new MyTransportation("BUS", 100) {
+        int fare(int distance) {
+            return distance * BASIC_FARE;
+        }
+    };
+
+    static final MyTransportation TRAIN = new MyTransportation("TRAIN", 150) {
+        @Override
+        int fare(int distance) {
+            return distance * BASIC_FARE;
+        }
+    };
+
+    static final MyTransportation SHIP = new MyTransportation("SHIP", 100) {
+        @Override
+        int fare(int distance) {
+            return distance * BASIC_FARE;
+        }
+    };
+
+    static final MyTransportation AIRPLANE = new MyTransportation("AIRPLANE", 300) {
+        @Override
+        int fare(int distance) {
+            return distance * BASIC_FARE;
+        }
+    };
+
+    abstract int fare(int distance);
+
+    protected final int BASIC_FARE;
+
+    MyTransportation(String name, int basicFare) {
+        super(name);
+        BASIC_FARE = basicFare;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+}
+```
+각각의 열거형 상수는 열거형 안에 선언된 추상메서드를 반드시 구현해야 한다. 
 
 
 
