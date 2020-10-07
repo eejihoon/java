@@ -1,6 +1,41 @@
-# Java 😎
+# 자료구조와 알고리즘 
+> 자료구조와 알고리즘을 공부하면서 정리한 내용은 [이곳](https://github.com/cocodori/java/tree/master/알고리즘)에 있습니다.
+<br>
+```java
+    /**
+     *  배열 array와 start값을 매개변수로 받는다.
+     *  array[]의 start번째 인덱스부터 시작하여 마지막 인덱스까지 반복하면서
+     *  가장 작은 값이 저장된 인덱스를 찾는다. 
+     */
+    public static int indexLowest(int[] array, int start) {
+        /**
+         *  가장 작은 값을 가진 인덱스를 저장할 변수
+         *  일단 start번째 인덱스가 가장 작은 값을 가진 인덱스라고 가정한다.
+         */
+        int lowIndex = start;
+        
+        /**
+         *  start번째 인덱스부터 배열의 끝까지 반복
+         *  두 인덱스를 비교하고, 더 작은 값을 가지고 있는 인덱스를
+         *  lowIndex에 저장한다.
+         */
+        for (int i = start; i<array.length;i++){
+            if (array[i] < array[lowIndex]) {
+                lowIndex = i;
+            }
+        } //for
+
+        //가장 작은 값을 가진 인덱스를 리턴
+        return lowIndex;
+    } //indexLowest() 
+```
+
+[더보기](https://github.com/cocodori/java/tree/master/알고리즘)
+
+
+# Java 
 > 자바를 공부하면서 정리한 내용입니다.  <br>
->자세한 내용은 [블로그](https://velog.io/@cocodori/series/Java) 또는 [note폴더](https://github.com/cocodori/java/tree/master/note) <br>
+>자세한 내용은 [블로그](https://velog.io/@cocodori/series/Java) 또는 [자바정리](https://github.com/cocodori/java/tree/master/note) <br>
 >참고 서적 : 📚 [자바의 정석](http://www.yes24.com/Product/Goods/24259565) 
 
 <br>
@@ -19,44 +54,4 @@
 2. 객체지향언어(순수하지는 않은 듯)
 3. 자동으로 메모리를 관리하는 Garbage Collection
 
-## JVM
-
- Java Virtual Machine. 자바로 만든 애플리케이션은 모두 JVM 위에서 실행된다. 따라서 OS만 거쳐서 컴파일되는 언어에 비해 약간 느리다는 단점이 있다. (byte code를 바로 기계어로 변환해주는 JIT컴파일러 도입으로 지금은 많이 개선됨)
-
-대신,
-
-OS에 종속적이지 않기 때문에 어느 운영체제에서든 실행할 수 있다는 장점이 있다. "Write once, run anywhere"
-
-![](https://images.velog.io/images/cocodori/post/4ab864e7-a555-42e8-b96a-775fcb8a112b/JVM%EA%B5%AC%EC%A1%B0.png)
-J
-
-알쓸신잡
-
-JDK - 자바 개발도구(Java Development Kit)
-
-JRE - 자바실행환경(Java Runtime Environment), 자바로 작성된 프로그램이 실행되기 위한 최소 환경
-
-# Data type
-
-크게 두 갈래로 나눌 수 있다.
-
-1. 기본형Primitive
-2. 참조형Reference
-
-기본형 8개 타입을 제외한 모든 타입은 참조형이다.
-
-## 기본 타입 Primitive type
-![](https://images.velog.io/images/cocodori/post/c69e8361-5f42-4b95-9f6b-546b8bf858ed/%EC%A3%BC%EC%84%9D%202020-07-19%20183109.png)
-
-
-![](https://images.velog.io/images/cocodori/post/dc48b695-ed36-4066-8403-4df8c33c4763/201704280834540415.png)
-
-## 참조 타입 Reference type
-
-그리고 나머지 모든 타입은 참조 타입이다.
-
-class, interface, array, enum type 등 수많은 참조 타입이 있다.
-
-이미 만들어져 있는 참조 타입을 쓸 수도 있고,
-
-직접 만들어서 사용(사용자 정의 타입)할 수도 있다.
+[더보기](https://github.com/cocodori/java/blob/master/자바정리)

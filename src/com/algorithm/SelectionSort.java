@@ -1,5 +1,7 @@
 package com.algorithm;
 
+import java.util.Arrays;
+
 public class SelectionSort {
     /**
     * 배열 array와 array의 두 인덱스(i, j)를 매개변수로 받아서 
@@ -49,5 +51,11 @@ public class SelectionSort {
         }
     } //selectionSort()
 
-    
+    public static void main(String[] args) {
+        int[] arr = {5,2,67,8,3,2,4,6,89,0,5,2,35,1};
+
+        selectionSort(arr);
+
+        System.out.println(Arrays.toString(arr));
+    }
 }
