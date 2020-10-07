@@ -1,7 +1,11 @@
 # 자료구조와 알고리즘 
 > 자료구조와 알고리즘을 공부하면서 정리한 내용은 [이곳](https://github.com/cocodori/java/tree/master/알고리즘)에 있습니다.
+
 <br>
+
+
 ```java
+
     /**
      *  배열 array와 start값을 매개변수로 받는다.
      *  array[]의 start번째 인덱스부터 시작하여 마지막 인덱스까지 반복하면서
@@ -30,10 +34,13 @@
     } //indexLowest() 
 ```
 
+
 [더보기](https://github.com/cocodori/java/tree/master/알고리즘)
 
 
+
 # Java 
+
 > 자바를 공부하면서 정리한 내용입니다.  <br>
 >자세한 내용은 [블로그](https://velog.io/@cocodori/series/Java) 또는 [자바정리](https://github.com/cocodori/java/tree/master/note) <br>
 >참고 서적 : 📚 [자바의 정석](http://www.yes24.com/Product/Goods/24259565) 
