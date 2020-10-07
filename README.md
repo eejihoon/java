@@ -1,5 +1,6 @@
 # 자료구조와 알고리즘 
 > 자료구조와 알고리즘을 공부하면서 정리한 내용은 [이곳](https://github.com/cocodori/java/tree/master/알고리즘)에 있습니다.
+<br>앨런 B.다우니의 [Thinking Data Structures](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148016214)를 참고하였습니다.
 
 <br>
 

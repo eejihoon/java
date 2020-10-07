@@ -17,7 +17,7 @@ public class SelectionSort {
         array[j] = temp;     
     }
 
-    /**`
+    /**
      *  배열 array와 start값을 매개변수로 받는다.
      *  array[]의 start번째 인덱스부터 시작하여 마지막 인덱스까지 반복하면서
      *  가장 작은 값이 저장된 인덱스를 찾는다. 
