@@ -36,6 +36,14 @@ public class MyArrayListTest {
     }
 
     @Test
+    public void testAddIntT() {
+        myList.add(1,5);
+        assertThat(myList.get(1), is(5));
+        assertThat(myList.get(2), is(2));
+        assertThat(myList.size(), is(4));
+    }
+
+    @Test
     public void testGet() {
         assertThat(myList.get(2), is(3));
     }
@@ -62,4 +70,28 @@ public class MyArrayListTest {
             System.out.println("Good");
         }
     }
+
+    @Test
+    public void testIndexOf() {
+        assertThat(myList.indexOf(3), is(2));
+        assertThat(myList.indexOf(2), is(1));
+        assertThat(myList.indexOf(1), is(0));
+        assertThat(myList.indexOf(10), is(-1));
+    }
+
+    @Test
+    public void testRemomve() {
+        for (int i = myList.size()-1; i < 0; i--) {
+            assertThat(myList.remove(i), is(i+1));
+        }
+
+        try {
+            myList.remove(5);
+            fail();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("예외처리 성공");
+        }
+    }
+
+
 }

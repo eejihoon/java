@@ -23,18 +23,30 @@ public class MyArrayList<E> implements List<E> {
      */
     @Override
     public boolean add(E element) {
-        /**
-         * 사이즈가 크다면 기존 배열의 *2길이로 새 배열을 생성하고, 기존 배열의 값을 복사한다. array를 이 결과값으로 초기화한다.
-         */
-        if (size >= array.length) {
-            E[] bigger = (E[]) new Object[array.length * 2];
-            System.arraycopy(array, 0, bigger, 0, array.length);
-            array = bigger;
-        }
+        ensureCapacityInternal(size);
         array[size] = element;
         size++;
 
         return true;
+    }
+
+    /*
+    *   index번째 요소부터 뒤로 한 칸씩 미루고
+    *   그 자리에 element를 저장한다.
+    * */
+    @Override
+    public void add(int index, E element) {
+        /*
+        *   1. 공간확보
+        *   2. index번째 요소부터 뒤로 한 칸씩 미룬다.
+        *   3. index번째 위치에 elememnt를 저장
+        *   4. size 1 증가
+        * */
+
+        ensureCapacityInternal(size+1);
+        System.arraycopy(array, index, array, index+1, size-index);
+        array[index] = element;
+        size++;
     }
 
     /**
@@ -42,9 +54,7 @@ public class MyArrayList<E> implements List<E> {
      */
     @Override
     public E get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         return array[index];
     }
 
@@ -62,9 +72,7 @@ public class MyArrayList<E> implements List<E> {
          * 2. 기존 index위치에 저장되어 있던 요소를 다른 변수에 저장해둔다.
          * 3. 배열 array의 index번째 위치에 element를 저장
          */
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         E oldValue = array[index];
         array[index] = element;
 
@@ -73,17 +81,83 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public int size() {
-        System.out.println("size : " + size);
         return this.size;
     }
 
-    /*****************************************************************************/
-
+    /*
+     *   매개변수의 인자로 받은 객체 arg0이 포함되어 있는지
+     *   배열 array의 첫 번째 요소부터 찾아나간다.
+     *   포함하지 않는다면 -1을 반환하고,
+     *   포함한다면 해당 객체가 저장된 인덱스를 반한다.
+     * */
     @Override
-    public void add(int arg0, E arg1) {
-        // TODO Auto-generated method stub
-
+    public int indexOf(Object element) {
+        /*
+        *   1. 배열 array에 저장되어 있는 모든 요소를 하나씩 꺼내서 arg0과 비교한다.
+        *       ㄴ 같은 게 있다면 해당 인덱스를 반환하고 반복 종료.
+        *       ㄴ 없다면 -1을 반환
+        arg0.equals(array[i]) ? break:-1;
+        * */
+        for(int i = 0; i < array.length; i++) {
+            if(element.equals(array[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
+    /*
+     *  매개변수의 인자로 받은 index에 저장된 요소를 삭제한다.
+     * */
+    @Override
+    public E remove(int index) {
+        /*
+        *   1. 인덱스 유효성 체크
+        *   2. 해당 인덱스에 저장된 값을 remomveElement에 저장
+        *   3. index가 마지막 인덱스인지 체크
+        *       ㄴ마지막이 아니라면 삭제한 요소 다음에 오는 요소들의 자리를 한 칸씩 앞으로 이동시킨다.
+        *   4. 마지막 요소를 null로 바꾼다.
+        *   5. size를 하나 줄인다.
+        *   6. removeElement 반환
+        * */
+        checkIndex(index);
+        E removeElement = array[index];
+        int numMoved = size - index - 1;
+
+        /*
+        *   numMoved가 0보다 크지 않다는 것은 삭제한 요소가 배열의 마지막 요소라는 것을 의미한다.
+        * */
+        if(numMoved > 0) {
+            System.arraycopy(array, index+1, array, index, numMoved);
+        }
+
+        /*
+        *   size를 하나 줄임과 동시에 마지막 요소를 null로 바꾼다.
+        * */
+        array[--size] = null;
+        return removeElement;
+    }
+
+    /*
+    *   index 유효성을 체크하는 메서드
+    * */
+    private void checkIndex(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    /*
+    *   내부 용량 확보
+    * */
+    private void ensureCapacityInternal(int size) {
+        if (size >= array.length) {
+            E[] bigger = (E[]) new Object[array.length * 2];
+            System.arraycopy(array, 0, bigger, 0, array.length);
+            array = bigger;
+        }
+    }
+
+    /*****************************************************************************/
 
     @Override
     public boolean addAll(Collection<? extends E> arg0) {
@@ -113,12 +187,6 @@ public class MyArrayList<E> implements List<E> {
     public boolean containsAll(Collection<?> arg0) {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    public int indexOf(Object arg0) {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     @Override
@@ -155,12 +223,6 @@ public class MyArrayList<E> implements List<E> {
     public boolean remove(Object arg0) {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    public E remove(int arg0) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
