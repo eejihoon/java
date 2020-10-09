@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -77,6 +78,9 @@ public class MyArrayListTest {
         assertThat(myList.indexOf(2), is(1));
         assertThat(myList.indexOf(1), is(0));
         assertThat(myList.indexOf(10), is(-1));
+        assertThat(myList.indexOf(null), is(-1));
+        myList.add(null);
+        assertThat(myList.indexOf(null), is(3));
     }
 
     @Test

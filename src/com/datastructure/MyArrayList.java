@@ -1,9 +1,7 @@
 package com.datastructure;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class MyArrayList<E> implements List<E> {
     /**
@@ -91,18 +89,31 @@ public class MyArrayList<E> implements List<E> {
      *   포함한다면 해당 객체가 저장된 인덱스를 반한다.
      * */
     @Override
-    public int indexOf(Object element) {
+    public int indexOf(Object o) {
         /*
-        *   1. 배열 array에 저장되어 있는 모든 요소를 하나씩 꺼내서 arg0과 비교한다.
-        *       ㄴ 같은 게 있다면 해당 인덱스를 반환하고 반복 종료.
-        *       ㄴ 없다면 -1을 반환
-        arg0.equals(array[i]) ? break:-1;
+        *   1. null체크
+        *       ㄴ null이라면 array의 요소 중 null이 있는지 확인하고 있다면 해당 인덱스 반환
+        *
+        *   2. null이 아닐 때
+        *       매개변수로 인자로 받은 o와 같은 요소가 array 안에 있는지 검사
+        *       있다면 해당 인덱스 반환
+        *
+        *   3. 없다면 -1 반환
         * */
-        for(int i = 0; i < array.length; i++) {
-            if(element.equals(array[i])) {
-                return i;
+        if(o == null) {
+            for (int i=0; i<size; i++) {
+                if (o == array[i]) {
+                    return i;
+                }
+            }
+        } else {
+            for(int i = 0; i < size; i++) {
+                if(o.equals(array[i])) {
+                    return i;
+                }
             }
         }
+
         return -1;
     }
     /*
