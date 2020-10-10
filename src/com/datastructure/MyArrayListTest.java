@@ -97,5 +97,21 @@ public class MyArrayListTest {
         }
     }
 
+    @Test
+    public void testRemoveObj() {
+        assertThat(myList.remove(new Integer(1)), is(true));
+    }
+
+    @Test
+    public void testRemoveAll() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+
+        assertThat(myList.removeAll(list), is(true));
+        assertThat(myList.get(0), is(3));
+        assertThat(myList.size(), is(1));
+    }
+
 
 }

@@ -168,6 +168,50 @@ public class MyArrayList<E> implements List<E> {
         }
     }
 
+    /*
+     *   지정한 Collection에 포함된 모든 요소를 지운다.
+     * */
+    @Override
+    public boolean removeAll(Collection<?> collection) {
+        /*
+        *   1. null체크
+        *   2. collection과 array를 비교하여 같은 요소가 있다면 삭제
+        *   3. 요소를 삭제했다면 true를 반환
+        *       삭제된 요소가 없다면 false를 반환
+        * */
+//        Objects.requireNonNull(collection);
+//        boolean result = false;
+//        for (int i=size; i<0; i--) {
+//            if(collection.contains(get(i-1))) {
+//                remove(i);
+//                result = true;
+//            }
+//            System.out.println(i+"");
+//        }
+//        return result;
+        boolean flag = false;
+        for (Object obj : collection) {
+            flag = remove(obj);
+        }
+        return flag;
+    }
+
+    /*
+    *
+    * */
+    @Override
+    public boolean remove(Object o) {
+        Objects.requireNonNull(o);
+        boolean result = false;
+        for (int i=0; i<size(); i++) {
+            if(o.equals(get(i))) {
+                remove(i);
+                result = true;
+            }
+        }
+        return result;
+    }
+
     /*****************************************************************************/
 
     @Override
@@ -230,17 +274,8 @@ public class MyArrayList<E> implements List<E> {
         return null;
     }
 
-    @Override
-    public boolean remove(Object arg0) {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
-    @Override
-    public boolean removeAll(Collection<?> arg0) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+
 
     @Override
     public boolean retainAll(Collection<?> arg0) {
