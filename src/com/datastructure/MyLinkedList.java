@@ -12,21 +12,21 @@ public class MyLinkedList<E> implements List<E> {
             this.next = null;
         }
 
-        public Node(E data, Node next) {
-            this.data = data;
-            this.next = next;
-        }
-
         public String toString() {
-            return "Node("+data.toString()+")";
+            return String.valueOf(this.data);
         }
     } // Node
 
     private int size;
     /*
-    *   Node는 데이터와 다음 노드의 위치를 저장한다.
+    *   첫 번째 노드의 정보를 담을 head
     * */
     private Node head;
+    /*
+    *   마지막 노드의 정보를 담을 tail
+    * */
+    private Node tail;
+
 
     public MyLinkedList() {
         size = 0;
@@ -86,9 +86,81 @@ public class MyLinkedList<E> implements List<E> {
         return true;
     }
 
-    @Override
-    public void add(int index, E element) {
+    /*
+    *   첫 번째 노드를 지정하는 메서드
+    * */
+    public void addFirst(E element) {
+        //새 엘리먼트로 노드 생성
+        Node newNode = new Node(element);
+        // 다음 노드로 head를 지정
+        newNode.next = head;
+        //head에 새 노드를 지정
+        head = newNode;
+        size++;
 
+        //다음 노드가 없다면 현재 요소가 마지막 노드가 된다.
+        if(head.next == null) {
+            tail = head;
+        }
+    }
+
+    /*
+    *   끝자리에 노드를 저장하는 메서드
+    * */
+    public void addLast(E element) {
+        Node newNode = new Node(element);
+        if(size == 0 ) {
+            //데이터가 없는 경우
+            addFirst(element);
+        } else {
+            //마지막 노드의 다음 노드를 새 노드로 지정
+            tail.next = newNode;
+            //마지막 노드를 새 노드로 지정
+            tail = newNode;
+            size++;
+        }
+    }
+
+    @Override
+    public void add(int k, E element) {
+        if(k==0) {  // 0번 인덱스를 지정했다면
+            addFirst(element);
+        } else {
+            //k 이전 인덱스의 데이터를 찾는다.
+            Node temp1 = node(k - 1);
+
+            //k번째 노드를 temp2로 지정한다.
+            Node temp2 = temp1.next;
+
+            //새로운 노드 생성
+            Node newNode = new Node(element);
+
+            //temp1의 다음 노드로 새로운 노드를 지정한다.
+            temp1.next = newNode;
+
+            //새로운 노드의 다음 요소로 temp2를 지정한다.
+            newNode.next = temp2;
+
+            size++;
+
+            //추가된 노드가 마지막 노드라면
+            //tail을 추가된 노드로 변경
+            if(newNode.next == null) {
+                tail = newNode;
+            }
+        }
+    }
+
+    /*
+    *   중간에 노드를 추가하는 메서드
+    * */
+    private Node node(int index) {
+        Node x = head;
+        x = x.next;
+        for (int i = 0; i < index; i++) {
+            x = x.next;
+        }
+        return x;
     }
 
     @Override
@@ -106,8 +178,9 @@ public class MyLinkedList<E> implements List<E> {
         if(index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
+        Node temp = node(index);
 
-        return null;
+        return temp.data;
     }
 
     @Override
@@ -155,7 +228,12 @@ public class MyLinkedList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return false;
+        boolean flag = true;
+        for (E element : c) {
+            flag &= add(element);
+            System.out.println("flag");
+        }
+        return flag;
     }
 
     @Override
