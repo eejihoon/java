@@ -40,49 +40,50 @@ public class MyLinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E element) {
-        /*
-        *   객체를 처음 저장하면
-        *   head를 Node객체로 초기화한다.
-        * */
-        if (head == null) {
-            head = new Node(element);
-            System.out.println("head : " +head);
-            System.out.println("head.next : " + head.next);
-            System.out.println("head.data : " + head.data);
+//        /*
+//        *   객체를 처음 저장하면
+//        *   head를 Node객체로 초기화한다.
+//        * */
+//        if (head == null) {
+//            head = new Node(element);
+//        } else {
+//            /*
+//            *   1. 처음 저장하는 데이터가 아닐 때,
+//            *        처음 저장했던 객체 정보를 node 담는다
+//            *
+//            *   2. node.next가 null이 아닐 동안 반복문을 돈다.
+//            *       ㄴ처음엔 null이 아니므로 통과
+//            *
+//            *   3. node.next에 지금 들어온 요소를 저장한다.
+//            *
+//            *
+//            * */
+//            Node node = head;
+//            //마지막 노드까지 반복
+//
+////            for (; node.next != null; node = node.next) {}
+//            while (node.next != null) {
+//                node = node.next;
+//            }
+//
+//            node.next = new Node(element);
+//
+//        }
+//        size++;
+//        return true;
+
+        Node newNode = new Node(element);
+        if(size == 0 ) {
+            //데이터가 없는 경우
+            addFirst(element);
         } else {
-            /*
-            *   1. 처음 저장하는 데이터가 아닐 때,
-            *        처음 저장했던 객체 정보를 node 담는다
-            *
-            *   2. node.next가 null이 아닐 동안 반복문을 돈다.
-            *       ㄴ처음엔 null이 아니므로 통과
-            *
-            *   3. node.next에 지금 들어온 요소를 저장한다.
-            *
-            *
-            * */
-            Node node = head;
-            //마지막 노드까지 반복
-            System.out.println("------------------새 엘리먼트------------------");
-//            System.out.println("node : " + node);
-//            System.out.println("node.next : " + node.next);
-//            System.out.println("node.data : " + node.data);
-
-            for (; node.next != null; node = node.next) {}
-
-        /*    if(node.next!=null) {
-                node = node.next;
-            }*/
-
-            node.next = new Node(element);
-
-            System.out.println("=============AFTER LOOP=====");
-            System.out.println("node : " + node);
-            System.out.println("node.next : " + node.next);
-            System.out.println("node.data : " + node.data);
-
+            //마지막 노드의 다음 노드를 새 노드로 지정
+            tail.next = newNode;
+            //마지막 노드를 새 노드로 지정
+            tail = newNode;
+            size++;
         }
-        size++;
+
         return true;
     }
 
@@ -161,6 +162,28 @@ public class MyLinkedList<E> implements List<E> {
             x = x.next;
         }
         return x;
+    }
+
+    @Override
+    public String toString() {
+        if(head == null) {  // 데이터가 없다면
+            return "[]";
+        }
+        //head를 찾는다.
+        Node temp = head;
+        String str = "[";
+
+        // 다음 노드가 없을 때까지 반복
+        // 마지막 노드는 이 while문에 접근할 수 없다.
+        while (temp.next == null) {
+            str += temp.data + ", ";
+            //현재 temp의 next값으로 temp를 바꾼다.
+            temp = temp.next;
+        }
+        //마지막 노도를 출력결과에 포함
+        str += temp.data;
+
+        return str + "]";
     }
 
     @Override

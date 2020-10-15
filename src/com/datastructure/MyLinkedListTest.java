@@ -3,6 +3,7 @@ package com.datastructure;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -23,11 +24,7 @@ public class MyLinkedListTest {
 
     @Test
     public void testAddElement() {
-        assertThat(myLinkedList.add(4), is(true));
-        assertThat(myLinkedList.add(5), is(true));
-//        assertThat(myLinkedList.size(), is(5));
-//
-//        System.out.println(myLinkedList);
+        System.out.println(myLinkedList);
     }
 
     @Test
