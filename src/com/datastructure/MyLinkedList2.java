@@ -1,5 +1,8 @@
 package com.datastructure;
 
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 public class MyLinkedList2<E> {
     /*
     *   head는 첫 번째 노드를 지정한다.
@@ -147,6 +150,119 @@ public class MyLinkedList2<E> {
 
     public int size() {
         return this.size;
+    }
+
+    /*
+    *   중간 데이터를 삭제하는 메서드
+    * */
+    public E remove(int index) {
+        if(index == 0) {
+            return removeFirst();
+        }
+
+        /*
+        *   노드를 삭제한다는 것은, 결국 연결(link)을 끊는다는 것이다.
+        *   삭제하려는 노드 이전 노드의 next값을 삭제하려는 노드 다음 노드를 바꾸면 된다.
+        * */
+        //삭제하려는 노드의 이전 노드
+        Node prevNode = node(index-1);
+        //삭제하려는 노드
+        Node todoDeleted = prevNode.next;
+        //next값을 삭제하려는 노드의 다음 노드로 변경
+        prevNode.next = prevNode.next.next;
+        E returnData = todoDeleted.data;
+
+        //삭제하려는 노드가 마지막 노드라면 이전 노드가 tail이 된다.
+        if(todoDeleted == tail) {
+            tail = prevNode;
+        }
+
+        todoDeleted = null;
+        size--;
+        return returnData;
+    }
+
+    /*
+    *   마지막 노드를 삭제하는 메서드
+    * */
+    public E removeLast() {
+        return remove(size-1);
+    }
+
+    public E get(int index) {
+        Node node = node(index);
+        return node.data;
+    }
+
+    public int indexOf(E data) {
+        Node temp = head;
+        int index = 0;
+        //입력 받은 데이터와 temp의 data와 입력 받은 data가 같지 않다면 반복
+        while (temp.data != data) {
+            //temp의 값을 다음 노드로 변경
+            temp = temp.next;
+            index++;
+            //더 이상 탐색 대상이 없다면
+            if (temp == null) {
+                return -1;
+            }
+        }
+        return index;
+    }
+
+    public ListIterator listIterator() {
+        return new ListIterator();
+    }
+
+    class ListIterator {
+        private Node next;
+        private Node lastReturned;
+        private int nextIndex;
+
+        ListIterator() {
+            next = head;
+        }
+
+        public E next() {
+            lastReturned = next;
+            next = next.next;
+            nextIndex++;
+            return lastReturned.data;
+        }
+
+        public boolean hasNext() {
+            return nextIndex < size();
+        }
+
+        public void add(E input) {
+            Node newNode = new Node(input);
+
+            //첫 번째 노드라면
+            if(lastReturned == null) {
+                head = newNode;
+                newNode.next = next;
+            } else {
+                lastReturned.next = newNode;
+                newNode.next = next;
+            }
+            lastReturned = newNode;
+            nextIndex++;
+            size++;
+        }
+
+        /*
+        *   데이터를 삭제한다는 것은
+        *   lastReturned를 삭제한다는 것
+        * */
+        public void remove() {
+            //next를 한 번도 호출하지 않은 상태라면
+            //아직 아무런 노드도 선택하지 않았다는 뜻이므로 삭제할 수 없다.
+            if(nextIndex == 0) {
+                throw new IllegalStateException();
+            }
+            MyLinkedList2.this.remove(nextIndex-1);
+            nextIndex--;
+        }
     }
 
 }
