@@ -86,4 +86,46 @@ public class MyLinkedList3Test {
         assertThat(list.remove(0), is(1));
         assertThat(list.size(), is(7));
     }
+
+    @Test
+    public void testRemoveObject() {
+        List<String> strList = new MyLinkedList3<>();
+
+        strList.add("a");
+        strList.add("b");
+        strList.add("c");
+        strList.add("d");
+        strList.add("e");
+
+        assertThat(strList.size(), is(5));
+        assertThat(strList.remove("b"), is(true));
+        assertThat(strList.remove("c"), is(true));
+        assertThat(strList.remove("d"), is(true));
+        assertThat(strList.size(), is(2));
+        assertThat(strList.remove("z"), is(false));
+    }
+
+    @Test
+    public void testIsEmpty() {
+        List testList = new MyLinkedList3();
+
+        assertThat(testList.isEmpty(), is(true));
+        testList.add("a");
+        assertThat(testList.isEmpty(), is(false));
+    }
+
+    @Test
+    public void testContains() {
+        assertThat(list.contains(8), is(true));
+        assertThat(list.contains(111), is(false));
+    }
+
+    @Test
+    public void testSet() {
+        assertThat(list.set(8, 888), is(9));
+        assertThat(list.get(8), is(888));
+        assertThat(list.size(), is(10));
+        assertThat(list.set(9, 100), is(10));
+        assertThat(list.get(9), is(100));
+    }
 }

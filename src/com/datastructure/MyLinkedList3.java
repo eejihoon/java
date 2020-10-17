@@ -30,32 +30,19 @@ public class MyLinkedList3<E> implements List<E> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-        return false;
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return null;
-    }
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return null;
+        boolean result = indexOf(o) != -1 ? true : false;
+        return result;
     }
 
     /*
     *   리스트의 끝에 지정한 요소(e)를 추가한다.
     * */
+
     @Override
     public boolean add(E e) {
         /*
@@ -71,7 +58,6 @@ public class MyLinkedList3<E> implements List<E> {
         addLast(newNode);
         return true;
     }
-
     private void addFirst(Node newNode) {
         //입력받은 노드의 다음 노드를 head로 지정
         //head를 새 노드로 변경
@@ -93,48 +79,33 @@ public class MyLinkedList3<E> implements List<E> {
         size++;
     }
 
+    /*
+    *   리스트를 순회하면서 지정한 데이터와 같은 데이터가 있다면 삭제한다.
+    *   같은 게 하나 이상이더라도, 맨 처음(index가 낮은) 발견한 데이터만 삭제한다.
+    * */
+
     @Override
     public boolean remove(Object o) {
-
+        /*
+        *   indexOf()로 o와 일치하는 노드가 있는지 탐색
+        *       ㄴ 있다면 해당 index를 삭제
+        * */
+        int index = indexOf(o);
+        //일치하는 데이터가 있다면
+        if (index != -1) {
+            //해당 인덱스 삭제
+            remove(index);
+            return true;
+        }
         return false;
     }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
     @Override
     public E get(int index) {
         checkIndex(index);
         Node getNode = node(index);
         return getNode.data;
     }
+
 
     /*
     *   입력 받은 index에 있는 노드를 찾는 메서드
@@ -147,9 +118,37 @@ public class MyLinkedList3<E> implements List<E> {
         return temp;
     }
 
+    /*
+    *   지정한 위치에 있는 노드를 지정한 요소(element)로 바꾼다.
+    * */
     @Override
     public E set(int index, E element) {
-        return null;
+        /*
+        *   1. index 유효성 체크
+        *   2. 바꾸려는 노드 이전 노드와 다음 노드를 찾는다.
+        *   3. 이전 노드와 바꾸려는 위치에 있는 기존 노드의 연결을 끊고, 새 노드와 연결한다.
+        *   4. 새 노드의 다음 노드로 기존 다음 노드를 연결한다.
+        *   5. 원래 노드(연결을 끊은 노드)를 반환한다.
+        * */
+        checkIndex(index);
+        //이전 노드를 찾는다.
+        Node prevNode = node(index-1);
+        //바꾸려는 위치에 있는 노드
+        Node deletedNode = prevNode.next;
+        //바꾸려는 위치의 다음 노드
+        Node nextNode = deletedNode.next;
+        //새 노드
+        Node newNode = new Node(element);
+        //이전 노드를 새 노드와 연결
+        prevNode.next = newNode;
+        //새 노드와 다음 노드를 연결
+        newNode.next = nextNode;
+        //만약 바꾼 노드가 마지막 노드였다면 tail로 변경
+        if(newNode.next == null) {
+            tail = newNode;
+        }
+
+        return deletedNode.data;
     }
 
     /*
@@ -269,6 +268,19 @@ public class MyLinkedList3<E> implements List<E> {
     }
 
     @Override
+    public String toString() {
+        Node temp = head;
+        String allNode="[";
+        //다음 노드가 없을 때까지 반복
+        while (temp.next != null) {
+            allNode += temp.data + ", ";
+            temp = temp.next;
+        }
+        //마지막 요소는 while문에 진입할 수 없으므로 밖에서 추가한다.
+        allNode += temp.data + "]";
+        return allNode;
+    }
+    @Override
     public int lastIndexOf(Object o) {
         return 0;
     }
@@ -289,16 +301,47 @@ public class MyLinkedList3<E> implements List<E> {
     }
 
     @Override
-    public String toString() {
-        Node temp = head;
-        String allNode="[";
-        //다음 노드가 없을 때까지 반복
-        while (temp.next != null) {
-            allNode += temp.data + ", ";
-            temp = temp.next;
-        }
-        //마지막 요소는 while문에 진입할 수 없으므로 밖에서 추가한다.
-        allNode += temp.data + "]";
-        return allNode;
+    public boolean containsAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return null;
+    }
+
+    @Override
+    public Object[] toArray() {
+        return new Object[0];
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return null;
     }
 }
