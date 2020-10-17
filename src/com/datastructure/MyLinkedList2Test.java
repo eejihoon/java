@@ -69,7 +69,10 @@ public class MyLinkedList2Test {
         for (int i = 0; i < 10; i++) {
             list.addLast(i+1);
         }
+        System.out.println(list.size());
         assertThat(list.indexOf(5), is(4));
+        System.out.println(list);
+        System.out.println(list.indexOf(10));
     }
 
     @Test
@@ -116,8 +119,4 @@ public class MyLinkedList2Test {
         assertThat(list.indexOf(2), is(-1));
         assertThat(list.size(), is(2));
     }
-
-
-
-
 }
