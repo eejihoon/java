@@ -169,13 +169,17 @@ public class MyDoublyLinkedList<E> {
         Node temp = head;
         //head의 값을 그 다음 노드로 변경
         head = head.next;
-
         /*
         *   temp는 어차피 이 메서드가 끝나는 동시에 사라질 텐데
         *   굳이 temp.data를 다시 변수에 담고, null로 초기화 시키는 이유가 뭐지?
         * */
         E returnData = temp.data;
         temp = null;
+
+        //기존 head를 지우고, 새로운 head의 prev값을 지운다.
+        if(head!=null) {
+            head.prev=null;
+        }
 
         size--;
         return returnData;
@@ -192,7 +196,6 @@ public class MyDoublyLinkedList<E> {
         if(index == 0) {
             return removeFirst();
         }
-
         /*
         *   노드를 삭제한다는 것은, 결국 연결(link)을 끊는다는 것이다.
         *   삭제하려는 노드 이전 노드의 next값을 삭제하려는 노드 다음 노드를 바꾸면 된다.
@@ -203,6 +206,11 @@ public class MyDoublyLinkedList<E> {
         Node todoDeleted = prevNode.next;
         //next값을 삭제하려는 노드의 다음 노드로 변경
         prevNode.next = prevNode.next.next;
+        //삭제한 노드의 다음 노드의 이전 노드를 prevNode로 한다.
+        if(prevNode.next != null) {
+            prevNode.next.prev = prevNode;
+        }
+
         E returnData = todoDeleted.data;
 
         //삭제하려는 노드가 마지막 노드라면 이전 노드가 tail이 된다.
