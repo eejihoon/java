@@ -1,9 +1,6 @@
-package com.datastructure;
+package com.datastructure.doublylinkedlist;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-public class MyLinkedList2<E> {
+public class MyDoublyLinkedList<E> {
     /*
     *   head는 첫 번째 노드를 지정한다.
     *   tail은 마지막 노드를 지정한다.
@@ -21,10 +18,13 @@ public class MyLinkedList2<E> {
         private E data;
         //다음 노드를 담을 변수
         private Node next;
+        //이전 노드를 담을 변수
+        private Node prev;
 
         public Node(E input) {
             this.data = input;
             this.next = null;
+            this.prev = null;
         }
 
         //노드의 내용을 출력해서 확인할 수 있도록 toString() 구현
@@ -40,10 +40,17 @@ public class MyLinkedList2<E> {
     public void addFirst(E input) {
         //노드 생성
         Node newNode = new Node(input);
-
         //새로운 노드의 다음 노드로 head를 지정한다.
         //만일 head가 없다면 null
         newNode.next = head;
+
+        /*
+        *   DoublyLinkedList에서 추가되는 부분
+        * */
+        //기존 head노드의 이전 노드로 새 노드를 지정한다.
+        if(head != null) {
+            head.prev = newNode;
+        }
 
         //헤드로 새로운 노드를 지정한다.
         head = newNode;
@@ -68,6 +75,11 @@ public class MyLinkedList2<E> {
         }
         // 마지막 노드의 다음 노드로 생성한 노드를 지정
         tail.next = newNode;
+        /*
+        *   이중 연결 리스트에서 추가된 부분
+        * */
+        //새로운 노드의 이전 노드는 현재 tail이 가리키고 있는 노드다.
+        newNode.prev = tail;
         //마지막 노드 갱신
         tail = newNode;
         size++;
@@ -77,11 +89,22 @@ public class MyLinkedList2<E> {
     *   특정 위치의 노드를 찾는 메서드
     * */
     private Node node(int index) {
-        Node x = head;
-        for (int i = 0; i < index; i++) {
-            x = x.next;
-        }
-        return x;
+        //지정한 인덱스가 사이즈/2보다 작은 경우는 앞에서부터 찾는다.
+         if(index < size / 2) {
+            Node x = head;
+            for (int i = 0; i < index; i++) {
+                System.out.println("x : " + x);
+                x = x.next;
+            }
+            return x;
+         }
+         //if문을 통과하지 못했으면 뒤에서부터 찾는다.
+        Node x = tail;
+         for (int i = size-1; i > index; i--) {
+             System.out.println("x : " + x);
+             x = x.prev;
+         }
+         return x;
     }
     /*
     *   node()를 이용해서 특정 위치에 노드를 추가하는 메서드
@@ -92,15 +115,25 @@ public class MyLinkedList2<E> {
             addFirst(input);
             return;
         }
-        Node temp1 = node(k-1);
-        Node temp2 = temp1.next;
+        //추가하려는 위치의 이전 노드
+        Node prevNode = node(k-1);
+        //추가하려는 위치의 다음 노드
+        Node nextNode = prevNode.next;
+        //추가할 노드 생성
         Node newNode = new Node(input);
-
-        temp1.next = newNode;
-        newNode.next = temp2;
-
+        
+        //이전 노드의 다음 노드로 새 노드
+        prevNode.next = newNode;
+        //새 노드의 다음 노드로 nextNode
+        newNode.next = nextNode;
+        //nextNode의 이전 노드로 새로운 노드 지정
+        if(nextNode != null) {
+            nextNode.prev = newNode;
+        }
+        //새 노드의 이전 노드로 이전 노드를 지정
+        newNode.prev = prevNode;
         size++;
-
+        //새 노드의 다음 노드가 없다면 새 노드가 마지막 노드가 된다.
         if(newNode.next == null) {
             tail = newNode;
         }
@@ -260,7 +293,7 @@ public class MyLinkedList2<E> {
             if(nextIndex == 0) {
                 throw new IllegalStateException();
             }
-            MyLinkedList2.this.remove(nextIndex-1);
+            MyDoublyLinkedList.this.remove(nextIndex-1);
             nextIndex--;
         }
     }

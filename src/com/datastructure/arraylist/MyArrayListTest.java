@@ -1,4 +1,4 @@
-package com.datastructure;
+package com.datastructure.arraylist;
 
 
 import org.junit.Before;

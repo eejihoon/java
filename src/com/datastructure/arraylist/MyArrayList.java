@@ -1,4 +1,4 @@
-package com.datastructure;
+package com.datastructure.arraylist;
 
 import java.util.*;
 import java.util.stream.IntStream;
