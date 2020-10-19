@@ -1,18 +1,18 @@
-package com.datastructure.doublylinkedlist;
+package com.datastructure.linkedlist;
 
 public class MyDoublyLinkedList<E> {
     /*
-    *   head는 첫 번째 노드를 지정한다.
-    *   tail은 마지막 노드를 지정한다.
-    * */
+     *   head는 첫 번째 노드를 지정한다.
+     *   tail은 마지막 노드를 지정한다.
+     * */
     private Node head;
     private Node tail;
     private int size = 0;
 
     /*
-    *   LinkedList에서 가장 중요한 것이 Node의 구현이다. 데이터는 모두 Node에 저장된다.
-    *   Node는 내부 클래스로 정의하는데, 사용자는 Node에 대해는 알 필요가 없으므로 private클래스로 한다.
-    * */
+     *   LinkedList에서 가장 중요한 것이 Node의 구현이다. 데이터는 모두 Node에 저장된다.
+     *   Node는 내부 클래스로 정의하는데, 사용자는 Node에 대해는 알 필요가 없으므로 private클래스로 한다.
+     * */
     private class Node {
         //데이터를 저장할 변수
         private E data;
@@ -35,8 +35,8 @@ public class MyDoublyLinkedList<E> {
     }// Node
 
     /*
-    *   첫 번째 자리에 데이터를 저장하는 메서드
-    * */
+     *   첫 번째 자리에 데이터를 저장하는 메서드
+     * */
     public void addFirst(E input) {
         //노드 생성
         Node newNode = new Node(input);
@@ -45,8 +45,8 @@ public class MyDoublyLinkedList<E> {
         newNode.next = head;
 
         /*
-        *   DoublyLinkedList에서 추가되는 부분
-        * */
+         *   DoublyLinkedList에서 추가되는 부분
+         * */
         //기존 head노드의 이전 노드로 새 노드를 지정한다.
         if(head != null) {
             head.prev = newNode;
@@ -63,8 +63,8 @@ public class MyDoublyLinkedList<E> {
     }
 
     /*
-    *   마지막에 데이터 추가
-    * */
+     *   마지막에 데이터 추가
+     * */
     public void addLast(E input) {
         //노드 생성
         Node newNode = new Node(input);
@@ -76,8 +76,8 @@ public class MyDoublyLinkedList<E> {
         // 마지막 노드의 다음 노드로 생성한 노드를 지정
         tail.next = newNode;
         /*
-        *   이중 연결 리스트에서 추가된 부분
-        * */
+         *   이중 연결 리스트에서 추가된 부분
+         * */
         //새로운 노드의 이전 노드는 현재 tail이 가리키고 있는 노드다.
         newNode.prev = tail;
         //마지막 노드 갱신
@@ -86,29 +86,29 @@ public class MyDoublyLinkedList<E> {
     }
 
     /*
-    *   특정 위치의 노드를 찾는 메서드
-    * */
+     *   특정 위치의 노드를 찾는 메서드
+     * */
     private Node node(int index) {
         //지정한 인덱스가 사이즈/2보다 작은 경우는 앞에서부터 찾는다.
-         if(index < size / 2) {
+        if(index < size / 2) {
             Node x = head;
             for (int i = 0; i < index; i++) {
                 System.out.println("x : " + x);
                 x = x.next;
             }
             return x;
-         }
-         //if문을 통과하지 못했으면 뒤에서부터 찾는다.
+        }
+        //if문을 통과하지 못했으면 뒤에서부터 찾는다.
         Node x = tail;
-         for (int i = size-1; i > index; i--) {
-             System.out.println("x : " + x);
-             x = x.prev;
-         }
-         return x;
+        for (int i = size-1; i > index; i--) {
+            System.out.println("x : " + x);
+            x = x.prev;
+        }
+        return x;
     }
     /*
-    *   node()를 이용해서 특정 위치에 노드를 추가하는 메서드
-    * */
+     *   node()를 이용해서 특정 위치에 노드를 추가하는 메서드
+     * */
     public void add(int k, E input) {
         // k가 0이라면 첫 번째 요소에 추가하는 것이므로 addFirst()를 사용
         if(k==0) {
@@ -121,7 +121,7 @@ public class MyDoublyLinkedList<E> {
         Node nextNode = prevNode.next;
         //추가할 노드 생성
         Node newNode = new Node(input);
-        
+
         //이전 노드의 다음 노드로 새 노드
         prevNode.next = newNode;
         //새 노드의 다음 노드로 nextNode
@@ -162,17 +162,17 @@ public class MyDoublyLinkedList<E> {
     }
 
     /*
-    *   첫 번째 노드를 삭제하고 삭제하는 노드를 return 하는 메서드
-    * */
+     *   첫 번째 노드를 삭제하고 삭제하는 노드를 return 하는 메서드
+     * */
     public E removeFirst() {
         //삭제할 노드 head를 temp에 저장
         Node temp = head;
         //head의 값을 그 다음 노드로 변경
         head = head.next;
         /*
-        *   temp는 어차피 이 메서드가 끝나는 동시에 사라질 텐데
-        *   굳이 temp.data를 다시 변수에 담고, null로 초기화 시키는 이유가 뭐지?
-        * */
+         *   temp는 어차피 이 메서드가 끝나는 동시에 사라질 텐데
+         *   굳이 temp.data를 다시 변수에 담고, null로 초기화 시키는 이유가 뭐지?
+         * */
         E returnData = temp.data;
         temp = null;
 
@@ -190,16 +190,16 @@ public class MyDoublyLinkedList<E> {
     }
 
     /*
-    *   중간 데이터를 삭제하는 메서드
-    * */
+     *   중간 데이터를 삭제하는 메서드
+     * */
     public E remove(int index) {
         if(index == 0) {
             return removeFirst();
         }
         /*
-        *   노드를 삭제한다는 것은, 결국 연결(link)을 끊는다는 것이다.
-        *   삭제하려는 노드 이전 노드의 next값을 삭제하려는 노드 다음 노드를 바꾸면 된다.
-        * */
+         *   노드를 삭제한다는 것은, 결국 연결(link)을 끊는다는 것이다.
+         *   삭제하려는 노드 이전 노드의 next값을 삭제하려는 노드 다음 노드를 바꾸면 된다.
+         * */
         //삭제하려는 노드의 이전 노드
         Node prevNode = node(index-1);
         //삭제하려는 노드
@@ -224,8 +224,8 @@ public class MyDoublyLinkedList<E> {
     }
 
     /*
-    *   마지막 노드를 삭제하는 메서드
-    * */
+     *   마지막 노드를 삭제하는 메서드
+     * */
     public E removeLast() {
         return remove(size-1);
     }
@@ -292,9 +292,9 @@ public class MyDoublyLinkedList<E> {
         }
 
         /*
-        *   데이터를 삭제한다는 것은
-        *   lastReturned를 삭제한다는 것
-        * */
+         *   데이터를 삭제한다는 것은
+         *   lastReturned를 삭제한다는 것
+         * */
         public void remove() {
             //next를 한 번도 호출하지 않은 상태라면
             //아직 아무런 노드도 선택하지 않았다는 뜻이므로 삭제할 수 없다.

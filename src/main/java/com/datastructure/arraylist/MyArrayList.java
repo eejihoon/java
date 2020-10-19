@@ -1,7 +1,6 @@
 package com.datastructure.arraylist;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class MyArrayList<E> implements List<E> {
     /**
@@ -29,17 +28,17 @@ public class MyArrayList<E> implements List<E> {
     }
 
     /*
-    *   index번째 요소부터 뒤로 한 칸씩 미루고
-    *   그 자리에 element를 저장한다.
-    * */
+     *   index번째 요소부터 뒤로 한 칸씩 미루고
+     *   그 자리에 element를 저장한다.
+     * */
     @Override
     public void add(int index, E element) {
         /*
-        *   1. 공간확보
-        *   2. index번째 요소부터 뒤로 한 칸씩 미룬다.
-        *   3. index번째 위치에 elememnt를 저장
-        *   4. size 1 증가
-        * */
+         *   1. 공간확보
+         *   2. index번째 요소부터 뒤로 한 칸씩 미룬다.
+         *   3. index번째 위치에 elememnt를 저장
+         *   4. size 1 증가
+         * */
 
         ensureCapacityInternal(size+1);
         System.arraycopy(array, index, array, index+1, size-index);
@@ -65,7 +64,7 @@ public class MyArrayList<E> implements List<E> {
     public E set(int index, E element) {
         /**
          * 구현 순서
-         * 
+         *
          * 1. 인덱스 유효 범위 체크 (0보다 작거나, array의 length보다 크거나) ㄴ 유효 범위 밖이라면 예외처리
          * 2. 기존 index위치에 저장되어 있던 요소를 다른 변수에 저장해둔다.
          * 3. 배열 array의 index번째 위치에 element를 저장
@@ -91,15 +90,15 @@ public class MyArrayList<E> implements List<E> {
     @Override
     public int indexOf(Object o) {
         /*
-        *   1. null체크
-        *       ㄴ null이라면 array의 요소 중 null이 있는지 확인하고 있다면 해당 인덱스 반환
-        *
-        *   2. null이 아닐 때
-        *       매개변수로 인자로 받은 o와 같은 요소가 array 안에 있는지 검사
-        *       있다면 해당 인덱스 반환
-        *
-        *   3. 없다면 -1 반환
-        * */
+         *   1. null체크
+         *       ㄴ null이라면 array의 요소 중 null이 있는지 확인하고 있다면 해당 인덱스 반환
+         *
+         *   2. null이 아닐 때
+         *       매개변수로 인자로 받은 o와 같은 요소가 array 안에 있는지 검사
+         *       있다면 해당 인덱스 반환
+         *
+         *   3. 없다면 -1 반환
+         * */
         if(o == null) {
             for (int i=0; i<size; i++) {
                 if (o == array[i]) {
@@ -122,35 +121,35 @@ public class MyArrayList<E> implements List<E> {
     @Override
     public E remove(int index) {
         /*
-        *   1. 인덱스 유효성 체크
-        *   2. 해당 인덱스에 저장된 값을 remomveElement에 저장
-        *   3. index가 마지막 인덱스인지 체크
-        *       ㄴ마지막이 아니라면 삭제한 요소 다음에 오는 요소들의 자리를 한 칸씩 앞으로 이동시킨다.
-        *   4. 마지막 요소를 null로 바꾼다.
-        *   5. size를 하나 줄인다.
-        *   6. removeElement 반환
-        * */
+         *   1. 인덱스 유효성 체크
+         *   2. 해당 인덱스에 저장된 값을 remomveElement에 저장
+         *   3. index가 마지막 인덱스인지 체크
+         *       ㄴ마지막이 아니라면 삭제한 요소 다음에 오는 요소들의 자리를 한 칸씩 앞으로 이동시킨다.
+         *   4. 마지막 요소를 null로 바꾼다.
+         *   5. size를 하나 줄인다.
+         *   6. removeElement 반환
+         * */
         checkIndex(index);
         E removeElement = array[index];
         int numMoved = size - index - 1;
 
         /*
-        *   numMoved가 0보다 크지 않다는 것은 삭제한 요소가 배열의 마지막 요소라는 것을 의미한다.
-        * */
+         *   numMoved가 0보다 크지 않다는 것은 삭제한 요소가 배열의 마지막 요소라는 것을 의미한다.
+         * */
         if(numMoved > 0) {
             System.arraycopy(array, index+1, array, index, numMoved);
         }
 
         /*
-        *   size를 하나 줄임과 동시에 마지막 요소를 null로 바꾼다.
-        * */
+         *   size를 하나 줄임과 동시에 마지막 요소를 null로 바꾼다.
+         * */
         array[--size] = null;
         return removeElement;
     }
 
     /*
-    *   index 유효성을 체크하는 메서드
-    * */
+     *   index 유효성을 체크하는 메서드
+     * */
     private void checkIndex(int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
@@ -158,8 +157,8 @@ public class MyArrayList<E> implements List<E> {
     }
 
     /*
-    *   내부 용량 확보
-    * */
+     *   내부 용량 확보
+     * */
     private void ensureCapacityInternal(int size) {
         if (size >= array.length) {
             E[] bigger = (E[]) new Object[array.length * 2];
@@ -174,11 +173,11 @@ public class MyArrayList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> collection) {
         /*
-        *   1. null체크
-        *   2. collection과 array를 비교하여 같은 요소가 있다면 삭제
-        *   3. 요소를 삭제했다면 true를 반환
-        *       삭제된 요소가 없다면 false를 반환
-        * */
+         *   1. null체크
+         *   2. collection과 array를 비교하여 같은 요소가 있다면 삭제
+         *   3. 요소를 삭제했다면 true를 반환
+         *       삭제된 요소가 없다면 false를 반환
+         * */
 //        Objects.requireNonNull(collection);
 //        boolean result = false;
 //        for (int i=size; i<0; i--) {
@@ -197,8 +196,8 @@ public class MyArrayList<E> implements List<E> {
     }
 
     /*
-    *
-    * */
+     *
+     * */
     @Override
     public boolean remove(Object o) {
         Objects.requireNonNull(o);

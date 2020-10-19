@@ -1,6 +1,5 @@
 package com.datastructure.linkedlist;
 
-import javax.xml.soap.Node;
 import java.util.*;
 
 public class MyLinkedList3<E> implements List<E> {

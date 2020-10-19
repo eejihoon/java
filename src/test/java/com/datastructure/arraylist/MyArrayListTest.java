@@ -1,11 +1,9 @@
 package com.datastructure.arraylist;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -17,10 +15,10 @@ public class MyArrayListTest {
 
     @Before
     public void setUp() throws Exception {
-         myList = new MyArrayList<Integer>();
-         myList.add(1);
-         myList.add(2);
-         myList.add(3);
+        myList = new MyArrayList<Integer>();
+        myList.add(1);
+        myList.add(2);
+        myList.add(3);
     }
 
     @Test

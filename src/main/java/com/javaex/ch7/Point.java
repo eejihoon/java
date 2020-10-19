@@ -24,11 +24,11 @@ class Point3D extends PointXY {
 	int z = 30;
 	
 	Point3D() {
-		this(100, 200, 300);	//Point3D(int x, int y, int z) È£Ãâ
+		this(100, 200, 300);	//Point3D(int x, int y, int z) È£ï¿½ï¿½
 	}
 	
 	Point3D(int x, int y, int z) {
-		super(x, y); //	PointXY(int x, int y) È£Ãâ
+		super(x, y); //	PointXY(int x, int y) È£ï¿½ï¿½
 		this.z = z;
 	}
 	
