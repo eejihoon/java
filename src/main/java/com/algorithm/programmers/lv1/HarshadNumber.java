@@ -7,7 +7,7 @@ import java.util.Scanner;
 *   예를 들어 18의 자릿수 합은 1+8=9이고, 18은 9로 나누어 떨어지므로 18은 하샤드 수가 맞다.
 *   자연수 x를 입력 받아 x가 하샤드 수인지 아닌지 검사하는 함수 solution을 완성한다.
 * */
-public class Q1 {
+public class HarshadNumber {
         public static void main(String[] args) {
             Solution solution = new Solution();
             Scanner sc = new Scanner(System.in);

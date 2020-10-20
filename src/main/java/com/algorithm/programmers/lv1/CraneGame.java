@@ -3,7 +3,8 @@ package com.algorithm.programmers.lv1;
 import java.util.*;
 
 /**
- * @see <a href="https://programmers.co.kr/learn/courses/30/lessons/64061">문제</a>
+ * https://programmers.co.kr/learn/courses/30/lessons/64061
+ *
  */
 class CraneGame {
     public int solution(int[][] board, int[] moves) {
