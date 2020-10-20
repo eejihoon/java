@@ -1,6 +1,7 @@
 # 자료구조와 알고리즘 
-> 자료구조와 알고리즘을 공부하면서 정리한 내용은 [이곳](https://github.com/cocodori/java/tree/master/알고리즘)에 있습니다.
-<br>앨런 B.다우니의 [Thinking Data Structures](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148016214)를 참고하였습니다.
+> 자료구조 알고리즘을 공부하면서 정리한 내용은 [자료구조](https://github.com/cocodori/java/tree/master/src/main/java/com/datastructure) , [알고리즘](https://github.com/cocodori/java/tree/master/알고리즘)에 있습니다.
+> [블로그](https://coco-log.tistory.com/)
+><br>앨런 B.다우니의 [Thinking Data Structures](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148016214)를 참고하였습니다.
 
 <br>
 
@@ -43,7 +44,7 @@
 # Java 
 
 > 자바를 공부하면서 정리한 내용입니다.  <br>
->자세한 내용은 [블로그](https://velog.io/@cocodori/series/Java) 또는 [자바정리](https://github.com/cocodori/java/tree/master/note) <br>
+>자세한 내용은 [블로그](https://velog.io/@cocodori/series/Java) 또는 [자바정리](https://github.com/cocodori/java/tree/master/자바정리) <br>
 >참고 서적 : 📚 [자바의 정석](http://www.yes24.com/Product/Goods/24259565) 
 
 <br>
