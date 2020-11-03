@@ -1,4 +1,4 @@
-package com.jsoup;
+package com.algorithm;
 
 /*
 *   1부터 100까지 숫자를 출력하는데,
